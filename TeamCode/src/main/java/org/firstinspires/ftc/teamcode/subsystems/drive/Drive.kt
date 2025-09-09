@@ -1,15 +1,26 @@
 package org.firstinspires.ftc.teamcode.subsystems.drive
 
 import dev.nextftc.bindings.Range
+import dev.nextftc.core.commands.utility.LambdaCommand
 import dev.nextftc.ftc.ActiveOpMode
 import dev.nextftc.ftc.Gamepads
 import dev.nextftc.hardware.impl.MotorEx
 import org.firstinspires.ftc.teamcode.subsystems.SubsystemBase
 import kotlin.math.pow
 
-class Drive(leftName: String, rightName: String) : SubsystemBase() {
-    private val left = MotorEx(leftName)
-    private val right = MotorEx(rightName)
+class Drive(private val leftName: String, private val rightName: String) : SubsystemBase() {
+    private lateinit var left: MotorEx
+    private lateinit var right: MotorEx
+
+    override fun initialize() {
+        left = MotorEx(leftName)
+        right = MotorEx(rightName)
+    }
+
+    private fun LambdaCommand.stopAtEnd() = this.setStop {
+        left.power = 0.0
+        right.power = 0.0
+    }
 
     fun tankDrive(leftPower: Range, rightPower: Range, scalar: Double = 1.0, easingPower: Int = 1) = run {
         left.power = -leftPower.get().pow(easingPower) * scalar
@@ -20,10 +31,7 @@ class Drive(leftName: String, rightName: String) : SubsystemBase() {
             addData("Right power", right.power)
             update()
         }
-    }.setStop {
-        left.power = 0.0
-        right.power = 0.0
-    }
+    }.stopAtEnd()
 
     fun povDrive(throttle: Range, steering: Range, easingPower: Int = 1) = run {
         val adjustedThrottle = -throttle.get().pow(easingPower)
@@ -39,7 +47,14 @@ class Drive(leftName: String, rightName: String) : SubsystemBase() {
             addData("RightPower", right.power)
             update()
         }
-    }.setStop {
+    }.stopAtEnd()
+
+    fun runPower(leftPower: Double, rightPower: Double) = runOnce {
+        left.power = leftPower
+        right.power = rightPower
+    }.stopAtEnd()
+
+    val stop = runOnce {
         left.power = 0.0
         right.power = 0.0
     }
