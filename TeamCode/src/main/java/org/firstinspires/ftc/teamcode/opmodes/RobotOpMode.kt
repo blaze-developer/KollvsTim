@@ -10,6 +10,9 @@ import org.firstinspires.ftc.teamcode.Robot
 abstract class RobotOpMode : NextFTCOpMode() {
     protected val robot = Robot()
 
+    /** Create a command object with the Robot's scope. Useful for accessing subsystems. **/
+    fun command(makeCommand: Robot.() -> Command) = robot.makeCommand()
+
     init {
         addComponents(
             SubsystemComponent(robot),
@@ -20,9 +23,6 @@ abstract class RobotOpMode : NextFTCOpMode() {
 }
 
 abstract class AutoMode : RobotOpMode() {
-    protected fun auto(createAuto: Robot.() -> Command) = createAuto(robot)
-
-    abstract val command: Command
-
-    override fun onStartButtonPressed() = command.schedule()
+    abstract val auto: Command
+    override fun onStartButtonPressed() = auto()
 }

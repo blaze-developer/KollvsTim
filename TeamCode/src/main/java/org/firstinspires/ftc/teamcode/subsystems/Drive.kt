@@ -1,11 +1,10 @@
-package org.firstinspires.ftc.teamcode.subsystems.drive
+package org.firstinspires.ftc.teamcode.subsystems
 
 import dev.nextftc.bindings.Range
 import dev.nextftc.core.commands.utility.LambdaCommand
 import dev.nextftc.ftc.ActiveOpMode
 import dev.nextftc.ftc.Gamepads
 import dev.nextftc.hardware.impl.MotorEx
-import org.firstinspires.ftc.teamcode.subsystems.SubsystemBase
 import kotlin.math.pow
 
 class Drive(private val leftName: String, private val rightName: String) : SubsystemBase() {
@@ -43,6 +42,8 @@ class Drive(private val leftName: String, private val rightName: String) : Subsy
         with (ActiveOpMode.telemetry) {
             addData("ThrottleRaw", throttle.get())
             addData("SteeringRaw", steering.get())
+            addData("ThrottleAdjusted", adjustedThrottle)
+            addData("SteeringAdjusted", adjustedSteering)
             addData("LeftPower", left.power)
             addData("RightPower", right.power)
             update()
@@ -52,6 +53,11 @@ class Drive(private val leftName: String, private val rightName: String) : Subsy
     fun runPower(leftPower: Double, rightPower: Double) = runOnce {
         left.power = leftPower
         right.power = rightPower
+    }.stopAtEnd()
+
+    fun runPov(throttle: Double, steering: Double) = runOnce {
+        left.power = throttle + steering
+        right.power = throttle - steering
     }.stopAtEnd()
 
     val stop = runOnce {
