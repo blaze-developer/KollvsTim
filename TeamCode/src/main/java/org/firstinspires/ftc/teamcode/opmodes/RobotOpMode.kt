@@ -20,9 +20,9 @@ abstract class RobotOpMode : NextFTCOpMode() {
 }
 
 abstract class AutoMode : RobotOpMode() {
-    protected fun auto(factory: Robot.() -> Command) = robot.factory()
+    protected fun auto(createAuto: Robot.() -> Command) = createAuto(robot)
 
     abstract val command: Command
 
-    override fun onStartButtonPressed() = command()
+    override fun onStartButtonPressed() = command.schedule()
 }
