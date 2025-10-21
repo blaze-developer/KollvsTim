@@ -1,11 +1,31 @@
 package org.firstinspires.ftc.teamcode
 
-import dev.nextftc.core.subsystems.Subsystem
+import dev.nextftc.core.commands.Command
+import dev.nextftc.core.components.BindingsComponent
+import dev.nextftc.core.components.SubsystemComponent
+import dev.nextftc.extensions.pedro.PedroComponent
+import dev.nextftc.ftc.NextFTCOpMode
+import dev.nextftc.ftc.components.BulkReadComponent
+import org.firstinspires.ftc.teamcode.component.Logger
+import org.firstinspires.ftc.teamcode.component.SubsystemRegistry
 import org.firstinspires.ftc.teamcode.subsystems.Drive
+import org.firstinspires.ftc.teamcode.subsystems.Dump
 
-class Robot() : Subsystem {
-    internal val drive = Drive("left", "right")
+abstract class RobotOpMode : NextFTCOpMode() {
+    protected val drive = Drive("fl", "fr", "bl", "br")
+    protected val dump = Dump()
 
-    /** The subsystems to register with the SubsystemComponent **/
-    override val subsystems = setOf(drive)
+    init {
+        addComponents(
+            Logger,
+            SubsystemRegistry,
+            BulkReadComponent,
+            BindingsComponent
+        )
+    }
+}
+
+abstract class AutoMode : RobotOpMode() {
+    abstract val auto: Command
+    override fun onStartButtonPressed() = auto()
 }
