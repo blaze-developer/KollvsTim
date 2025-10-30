@@ -1,20 +1,17 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
-import com.pedropathing.follower.Follower
 import com.pedropathing.follower.FollowerConstants
 import com.pedropathing.ftc.FollowerBuilder
 import com.pedropathing.ftc.drivetrains.MecanumConstants
+import com.pedropathing.ftc.localization.Encoder
+import com.pedropathing.ftc.localization.constants.DriveEncoderConstants
+import com.pedropathing.geometry.Pose
 import dev.nextftc.bindings.Range
-import dev.nextftc.core.commands.Command
-import dev.nextftc.extensions.pedro.FollowPath
 import dev.nextftc.ftc.ActiveOpMode
 import dev.nextftc.ftc.Gamepads
 import dev.nextftc.hardware.impl.Direction
 import dev.nextftc.hardware.impl.IMUEx
 import dev.nextftc.hardware.impl.MotorEx
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D
 import org.firstinspires.ftc.teamcode.component.Logger
 import kotlin.math.absoluteValue
 import kotlin.math.cos
@@ -30,49 +27,78 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
     private val backRight = MotorEx(brName).brakeMode().reversed()
     private val imu = IMUEx("imu", Direction.UP, Direction.RIGHT).zeroed()
 
-    // Path Following
-    private val mecanumConstants = MecanumConstants()
-        .maxPower(1.0)
-        .leftFrontMotorName(flName)
-        .rightFrontMotorName(frName)
-        .leftRearMotorName(blName)
-        .rightRearMotorName(brName)
+    private val encoderConstants by lazy {
+        DriveEncoderConstants()
+            .leftFrontMotorName(flName)
+            .rightFrontMotorName(frName)
+            .leftRearMotorName(blName)
+            .rightRearMotorName(brName)
+            .leftFrontEncoderDirection(Encoder.FORWARD)
+            .rightFrontEncoderDirection(Encoder.REVERSE)
+            .leftRearEncoderDirection(Encoder.FORWARD)
+            .rightRearEncoderDirection(Encoder.REVERSE)
+            .forwardTicksToInches(1.0)
+            .strafeTicksToInches(1.0)
+            .turnTicksToInches(1.0)
+            .robotLength(1.0)
+            .robotWidth(1.0)
+    }
 
-    private val ppConstants = FollowerConstants()
-        .mass(5.0)
+    private val mecanumConstants by lazy {
+        MecanumConstants()
+            .leftFrontMotorName(flName)
+            .rightFrontMotorName(frName)
+            .leftRearMotorName(blName)
+            .rightRearMotorName(brName)
+    }
 
-    private val follower = FollowerBuilder(ppConstants, ActiveOpMode.hardwareMap)
-        .mecanumDrivetrain(mecanumConstants)
-        .build()
+    private val follower by lazy {
+        FollowerBuilder(FollowerConstants(), ActiveOpMode.hardwareMap)
+            .driveEncoderLocalizer(encoderConstants)
+            .mecanumDrivetrain(mecanumConstants)
+            .build()
+    }
+
+    var pose: Pose
+        get() = follower.pose
+        set(value) { follower.pose = value }
 
     override fun periodic() {
-        follower.update()
-
         with(Logger) {
             log("Drive/FlPower", frontLeft.power)
             log("Drive/FrPower", frontRight.power)
             log("Drive/BlPower", backLeft.power)
             log("Drive/BrPower", backRight.power)
             log("Drive/YawRads", imu().inRad)
-            log("Odometry/Robot", Pose2D(
-                DistanceUnit.METER,
-                0.0,
-                0.0,
-                AngleUnit.RADIANS,
-                imu().inRad
-            ))
+            log("Odometry/Robot", pose)
         }
-
-        // TODO Add Odometry :3
     }
 
     override val defaultCommand = with(Gamepads.gamepad1) {
         joystickDrive(
             leftStickY,
             leftStickX,
-            rightStickX,
+            -rightStickX,
             smoothingPower = 2
         )
+    }
+
+    fun runFieldPowers(fieldX: Double, fieldY: Double, fieldTheta: Double) {
+        val heading = imu().inRad
+        val robotX = -(fieldX * sin(-heading) + fieldY * cos(-heading))
+        val robotY = fieldX * cos(-heading) - fieldY * sin(-heading)
+
+        runRobotPowers(robotX, robotY, fieldTheta)
+    }
+
+    fun runRobotPowers(robotX: Double, robotY: Double, robotTheta: Double) {
+        val denominator =
+            max(robotX.absoluteValue + robotY.absoluteValue + robotTheta.absoluteValue, 1.0)
+
+        frontLeft.power = (robotY + robotX + robotTheta) / denominator
+        frontRight.power = (robotY - robotX - robotTheta) / denominator
+        backLeft.power = (robotY - robotX + robotTheta) / denominator
+        backRight.power = (robotY + robotX - robotTheta) / denominator
     }
 
     fun joystickDrive(
@@ -81,22 +107,10 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
         theta: Range,
         smoothingPower: Int
     ) = run {
-        val heading = imu().inRad
-
         val adjustedX = fieldX().pow(smoothingPower).absoluteValue * fieldX().sign
         val adjustedY = fieldY().pow(smoothingPower).absoluteValue * fieldY().sign
 
-        val robotX = -(adjustedX * sin(-heading) + adjustedY * cos(-heading))
-        val robotY = adjustedX * cos(-heading) - adjustedY * sin(-heading)
-        val robotTheta = -theta()
-
-        val denominator =
-            max(robotX.absoluteValue + robotY.absoluteValue + robotTheta.absoluteValue, 1.0)
-
-        frontLeft.power = (robotY + robotX + robotTheta) / denominator
-        frontRight.power = (robotY - robotX - robotTheta) / denominator
-        backLeft.power = (robotY - robotX + robotTheta) / denominator
-        backRight.power = (robotY + robotX - robotTheta) / denominator
+        runFieldPowers(adjustedX, adjustedY, theta())
     }
 
     val zeroIMU = runOnce { imu.zero() }

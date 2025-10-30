@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.component
 
-import dev.nextftc.core.commands.Command
 import dev.nextftc.core.commands.CommandManager
 import dev.nextftc.core.components.Component
-import dev.nextftc.core.components.SubsystemComponent
 import dev.nextftc.core.subsystems.Subsystem
 
 object SubsystemRegistry : Component {
@@ -19,8 +17,8 @@ object SubsystemRegistry : Component {
         if (!CommandManager.hasCommandsUsing(it)) it.defaultCommand.schedule()
     }
 
-    fun register(sys: Subsystem) = subsystems.addAll(sys.flatten())
-
-    private fun Subsystem.flatten(): Collection<Subsystem> =
-        listOf(this) + this.subsystems.flatMap { it.flatten() }
+    fun register(sys: Subsystem) = subsystems.addAll(sys.subsystems.flatMap { it.subsystems })
+//
+//    private fun Subsystem.flatten(): Collection<Subsystem> =
+//        listOf(this) + this.subsystems.flatMap { it.flatten() }
 }

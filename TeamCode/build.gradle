@@ -38,5 +38,7 @@ dependencies {
     implementation 'dev.nextftc:ftc:1.0.0'
     implementation 'dev.nextftc:hardware:1.0.0' // If you would like to use the hardware module
     implementation 'dev.nextftc.extensions:pedro:1.0.0'
+//    implementation 'org.psilynx.psikit:core:0.1.0'
+//    implementation 'org.psilynx.psikit:ftc:0.1.0'
     implementation("page.j5155.AdvantageScope:lite:v26.0.0")
 }

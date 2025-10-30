@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.component
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.pedropathing.ftc.FTCCoordinates
+import com.pedropathing.geometry.CoordinateSystem
+import com.pedropathing.geometry.Pose
 import dev.nextftc.core.components.Component
 import dev.nextftc.core.units.Angle
 import dev.nextftc.core.units.Distance
@@ -34,13 +37,10 @@ object Logger : Component {
     fun log(key: String, value: Angle) = log("${key}Rads", value.inRad)
     fun log(key: String, value: Distance) = log("${key}Meters", value.inMeters)
 
-    fun log(key: String, x: Distance, y: Distance, yaw: Angle) {
-        log(key, Pose2D(DistanceUnit.METER, x.inMeters, y.inMeters, AngleUnit.RADIANS, yaw.inRad))
-    }
-
-    fun log(key: String, value: Pose2D) {
-        log("$key x", value.getX(DistanceUnit.METER))
-        log("$key y", value.getY(DistanceUnit.METER))
-        log("$key heading", value.getHeading(AngleUnit.RADIANS))
+    fun log(key: String, value: Pose) {
+        val pose = value.getAsCoordinateSystem(FTCCoordinates.INSTANCE)
+        log("$key x", pose.x)
+        log("$key y", pose.y)
+        log("$key heading", pose.heading)
     }
 }
