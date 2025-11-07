@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.component
 
 import dev.nextftc.core.components.Component
+import dev.nextftc.ftc.ActiveOpMode
 import org.firstinspires.ftc.teamcode.logging.dataflow.LogReceiver
-import org.firstinspires.ftc.teamcode.logging.structure.LogTable
-import org.firstinspires.ftc.teamcode.logging.dataflow.LoggableInputs
 import org.firstinspires.ftc.teamcode.logging.dataflow.ReplaySource
+import org.firstinspires.ftc.teamcode.logging.structure.LogTable
 import org.firstinspires.ftc.teamcode.logging.structure.LoggableInputs
 import kotlin.system.exitProcess
 
@@ -23,6 +23,8 @@ object Logger : Component {
     fun processInputs(key: String, inputs: LoggableInputs) {
         if(hasReplaySource) {
             inputs.fromLog(LogTable(System.nanoTime()))
+
+            ActiveOpMode.opModeIsActive
         } else {
             inputs.toLog(LogTable(System.nanoTime()))
         }
@@ -47,7 +49,7 @@ object Logger : Component {
 
     /** Sends packets and logs data. Runs after user code. **/
     override fun postUpdate() {
-        logReceivers.forEach { it.process(table) }
+        logReceivers.forEach { it.receive(table) }
     }
 
     override fun preWaitForStart() = preUpdate()

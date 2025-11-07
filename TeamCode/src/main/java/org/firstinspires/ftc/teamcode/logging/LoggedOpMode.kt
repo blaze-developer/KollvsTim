@@ -18,6 +18,10 @@ abstract class LoggedNextFTCOpMode : LinearOpMode() {
         _components.addAll(components)
     }
 
+    override fun getRuntime(): Double {
+        return Logger.timestamp.toDouble() / 1_000_000
+    }
+
     private val inputs = object : LoggableInputs {
         var isActive = false
         var inInit = false
