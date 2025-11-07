@@ -30,7 +30,7 @@ class Dore : SubsystemBase() {
 
     val place = SequentialGroup(
         open,
-        Delay(1.0.seconds),
+        Delay(0.5.seconds),
         close
     ).requires(this)
 

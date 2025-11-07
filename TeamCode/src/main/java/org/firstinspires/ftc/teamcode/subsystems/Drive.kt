@@ -7,6 +7,8 @@ import com.pedropathing.ftc.localization.Encoder
 import com.pedropathing.ftc.localization.constants.DriveEncoderConstants
 import com.pedropathing.geometry.Pose
 import dev.nextftc.bindings.Range
+import dev.nextftc.core.commands.groups.SequentialGroup
+import dev.nextftc.core.units.Angle
 import dev.nextftc.ftc.ActiveOpMode
 import dev.nextftc.ftc.Gamepads
 import dev.nextftc.hardware.impl.Direction
@@ -19,6 +21,7 @@ import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.sign
 import kotlin.math.sin
+import kotlin.time.Duration
 
 class Drive(flName: String, frName: String, blName: String, brName: String) : SubsystemBase() {
     private val frontLeft = MotorEx(flName).brakeMode()
@@ -74,14 +77,9 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
         }
     }
 
-    override val defaultCommand = with(Gamepads.gamepad1) {
-        joystickDrive(
-            leftStickY,
-            leftStickX,
-            -rightStickX,
-            smoothingPower = 2
-        )
-    }
+    fun runFieldPowersCmd(fieldX: Double, fieldY: Double, fieldTheta: Double) = runOnce {
+        runFieldPowers(fieldX, fieldY, fieldTheta)
+    }.setIsDone { false }
 
     private fun runFieldPowers(fieldX: Double, fieldY: Double, fieldTheta: Double) {
         val heading = imu().inRad
@@ -120,8 +118,21 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
 
         runFieldPowers(adjustedX, adjustedY, theta())
     }
-
     val zeroIMU = runOnce { imu.zero() }
+
+    val stop = runFieldPowersCmd(0.0, 0.0, 0.0)
+
+    fun runForTime(x: Double, y: Double, t: Double, dur: Duration) =
+        runFieldPowersCmd(x, y, t).endAfter(dur).then(stop).requires(this)
+
+    override val defaultCommand = with(Gamepads.gamepad1) {
+        joystickDrive(
+            leftStickY,
+            leftStickX,
+            -rightStickX,
+            smoothingPower = 2
+        )
+    }
 
     private operator fun Range.invoke() = get()
     private operator fun IMUEx.invoke() = get()
