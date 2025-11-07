@@ -103,10 +103,6 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
         runRobotPowers(robotX, robotY, robotTheta)
     }.setIsDone { false }
 
-    fun runFieldPowersCmd(fieldX: Double, fieldY: Double, fieldTheta: Double) = run {
-        runFieldPowers(fieldX, fieldY, fieldTheta)
-    }.setIsDone { false }
-
     fun joystickDrive(
         fieldX: Range,
         fieldY: Range,

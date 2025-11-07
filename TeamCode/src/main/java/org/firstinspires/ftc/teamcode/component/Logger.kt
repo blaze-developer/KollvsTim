@@ -1,46 +1,55 @@
 package org.firstinspires.ftc.teamcode.component
 
-import com.acmerobotics.dashboard.FtcDashboard
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket
-import com.pedropathing.ftc.FTCCoordinates
-import com.pedropathing.geometry.CoordinateSystem
-import com.pedropathing.geometry.Pose
 import dev.nextftc.core.components.Component
-import dev.nextftc.core.units.Angle
-import dev.nextftc.core.units.Distance
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D
+import org.firstinspires.ftc.teamcode.logging.dataflow.LogReceiver
+import org.firstinspires.ftc.teamcode.logging.structure.LogTable
+import org.firstinspires.ftc.teamcode.logging.dataflow.LoggableInputs
+import org.firstinspires.ftc.teamcode.logging.dataflow.ReplaySource
+import org.firstinspires.ftc.teamcode.logging.structure.LoggableInputs
+import kotlin.system.exitProcess
 
 object Logger : Component {
-    private var packet: TelemetryPacket? = null
+    private var table: LogTable = LogTable(0)
     private var timeBeforeUpdate = 0L
+
+    private val logReceivers: MutableList<LogReceiver> = mutableListOf()
+    private var logSource: ReplaySource? = null
+    val hasReplaySource: Boolean get() = logSource != null
+
+    val timestamp: Long get() = table.timestamp
+
+    fun addReceiver(receiver: LogReceiver) = logReceivers.add(receiver)
+
+    fun processInputs(key: String, inputs: LoggableInputs) {
+        if(hasReplaySource) {
+            inputs.fromLog(LogTable(System.nanoTime()))
+        } else {
+            inputs.toLog(LogTable(System.nanoTime()))
+        }
+    }
+    
+    fun output(key: String, value: String) = table.put(key, value)
 
     /** Sets up the packet for this loop. Runs before user code. **/
     override fun preUpdate() {
-        packet = TelemetryPacket()
+        // Update timestamps and tables from replay
+        if (hasReplaySource) {
+            val updated = logSource?.updateTable(table) ?: false
+            if (!updated) {
+                exitProcess(1)
+            }
+        } else {
+            table.timestamp = System.nanoTime()
+        }
+
         timeBeforeUpdate = System.nanoTime()
     }
 
     /** Sends packets and logs data. Runs after user code. **/
     override fun postUpdate() {
-        log("Logger/UpdateMS", (System.nanoTime() - timeBeforeUpdate).toDouble() / 1000000)
-
-        FtcDashboard.getInstance().sendTelemetryPacket(packet)
+        logReceivers.forEach { it.process(table) }
     }
 
     override fun preWaitForStart() = preUpdate()
     override fun postWaitForStart() = postUpdate()
-
-    fun log(key: String, value: Any) = packet?.put(key, value)
-
-    fun log(key: String, value: Angle) = log("${key}Rads", value.inRad)
-    fun log(key: String, value: Distance) = log("${key}Meters", value.inMeters)
-
-    fun log(key: String, value: Pose) {
-        val pose = value.getAsCoordinateSystem(FTCCoordinates.INSTANCE)
-        log("$key x", pose.x)
-        log("$key y", pose.y)
-        log("$key heading", pose.heading)
-    }
 }
