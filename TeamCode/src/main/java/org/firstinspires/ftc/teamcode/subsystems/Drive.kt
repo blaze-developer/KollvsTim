@@ -83,7 +83,7 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
         )
     }
 
-    fun runFieldPowers(fieldX: Double, fieldY: Double, fieldTheta: Double) {
+    private fun runFieldPowers(fieldX: Double, fieldY: Double, fieldTheta: Double) {
         val heading = imu().inRad
         val robotX = -(fieldX * sin(-heading) + fieldY * cos(-heading))
         val robotY = fieldX * cos(-heading) - fieldY * sin(-heading)
@@ -91,7 +91,7 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
         runRobotPowers(robotX, robotY, fieldTheta)
     }
 
-    fun runRobotPowers(robotX: Double, robotY: Double, robotTheta: Double) {
+    private fun runRobotPowers(robotX: Double, robotY: Double, robotTheta: Double) {
         val denominator =
             max(robotX.absoluteValue + robotY.absoluteValue + robotTheta.absoluteValue, 1.0)
 
@@ -100,6 +100,14 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
         backLeft.power = (robotY - robotX + robotTheta) / denominator
         backRight.power = (robotY + robotX - robotTheta) / denominator
     }
+
+    fun runRobotPowersCmd(robotX: Double, robotY: Double, robotTheta: Double) = run {
+        runRobotPowers(robotX, robotY, robotTheta)
+    }.setIsDone { false }
+
+    fun runFieldPowersCmd(fieldX: Double, fieldY: Double, fieldTheta: Double) = run {
+        runFieldPowers(fieldX, fieldY, fieldTheta)
+    }.setIsDone { false }
 
     fun joystickDrive(
         fieldX: Range,

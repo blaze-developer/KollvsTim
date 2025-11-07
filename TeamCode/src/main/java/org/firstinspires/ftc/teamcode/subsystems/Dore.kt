@@ -12,7 +12,7 @@ import kotlin.time.Duration.Companion.seconds
 class Dore : SubsystemBase() {
     private val servo = ServoEx("dore")
     private val servoRangeDeg = 0.0..300.0
-    
+
     private fun setPosition(angle: Angle) = runOnce {
         val effectiveAngle = angle.wrapped.inDeg.coerceIn(servoRangeDeg).deg
         val servoSetpoint = effectiveAngle.inDeg / servoRangeDeg.endInclusive
