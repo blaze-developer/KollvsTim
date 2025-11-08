@@ -15,28 +15,31 @@ class LogTable(
     fun put(key: String, value: LogValue) = mutableEntries.put(key, value)
 
     /** Put a String into the table. **/
-    fun put(key: String, value: String) = mutableEntries.put(key, value.asLogValue())
+    fun put(key: String, value: String) = put(key, value.asLogValue())
 
     /** Put a Boolean into the table. **/
-    fun put(key: String, value: Boolean) = mutableEntries.put(key, value.asLogValue())
+    fun put(key: String, value: Boolean) = put(key, value.asLogValue())
 
     /** Put a Int into the table. **/
-    fun put(key: String, value: Int) = mutableEntries.put(key, value.asLogValue())
+    fun put(key: String, value: Int) = put(key, value.asLogValue())
 
     /** Put a Long into the table. **/
-    fun put(key: String, value: Long) = mutableEntries.put(key, value.asLogValue())
+    fun put(key: String, value: Long) = put(key, value.asLogValue())
 
     /** Put a Float into the table. **/
-    fun put(key: String, value: Float) = mutableEntries.put(key, value.asLogValue())
+    fun put(key: String, value: Float) = put(key, value.asLogValue())
 
     /** Put a Double into the table. **/
-    fun put(key: String, value: Double) = mutableEntries.put(key, value.asLogValue())
+    fun put(key: String, value: Double) = put(key, value.asLogValue())
 
     /** Put a Byte into the table. **/
-    fun put(key: String, value: Byte) = mutableEntries.put(key, value.asLogValue())
+    fun put(key: String, value: Byte) = put(key, value.asLogValue())
 
     /** Put a ByteArray into the table. **/
-    fun put(key: String, value: ByteArray) = mutableEntries.put(key, value.asLogValue())
+    fun put(key: String, value: ByteArray) = put(key, value.asLogValue())
+
+    /** Put a DoubleArray into the table. **/
+    fun put(key: String, value: DoubleArray) = put(key, value.asLogValue())
 
     /** Get a raw LogValue from the table **/
     fun get(key: String, default: LogValue) = mutableEntries[key] ?: default

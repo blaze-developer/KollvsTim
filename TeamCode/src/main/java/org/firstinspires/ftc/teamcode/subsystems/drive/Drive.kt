@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems
+package org.firstinspires.ftc.teamcode.subsystems.drive
 
 import com.pedropathing.follower.FollowerConstants
 import com.pedropathing.ftc.FollowerBuilder
@@ -7,14 +7,13 @@ import com.pedropathing.ftc.localization.Encoder
 import com.pedropathing.ftc.localization.constants.DriveEncoderConstants
 import com.pedropathing.geometry.Pose
 import dev.nextftc.bindings.Range
-import dev.nextftc.core.commands.groups.SequentialGroup
-import dev.nextftc.core.units.Angle
 import dev.nextftc.ftc.ActiveOpMode
 import dev.nextftc.ftc.Gamepads
 import dev.nextftc.hardware.impl.Direction
 import dev.nextftc.hardware.impl.IMUEx
 import dev.nextftc.hardware.impl.MotorEx
 import org.firstinspires.ftc.teamcode.logging.Logger
+import org.firstinspires.ftc.teamcode.subsystems.SubsystemBase
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.max
@@ -68,12 +67,12 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
 
     override fun periodic() {
         with(Logger) {
-            output("Drive/FlPower", frontLeft.power)
-            output("Drive/FrPower", frontRight.power)
-            output("Drive/BlPower", backLeft.power)
-            output("Drive/BrPower", backRight.power)
-            output("Drive/YawRads", imu().inRad)
-            output("Odometry/Robot", pose)
+            log("Drive/FlPower", frontLeft.power)
+            log("Drive/FrPower", frontRight.power)
+            log("Drive/BlPower", backLeft.power)
+            log("Drive/BrPower", backRight.power)
+            log("Drive/YawRads", imu().inRad)
+//            log("Odometry/Robot", pose)
         }
     }
 

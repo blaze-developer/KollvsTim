@@ -9,8 +9,7 @@ import org.firstinspires.ftc.teamcode.logging.Logger
 import org.firstinspires.ftc.teamcode.component.SubsystemRegistry
 import org.firstinspires.ftc.teamcode.logging.LoggedNextFTCOpMode
 import org.firstinspires.ftc.teamcode.logging.dataflow.ftcdashboard.FTCDashboard
-import org.firstinspires.ftc.teamcode.subsystems.Dore
-import org.firstinspires.ftc.teamcode.subsystems.Drive
+import org.firstinspires.ftc.teamcode.subsystems.drive.Drive
 
 abstract class RobotOpMode : LoggedNextFTCOpMode() {
     protected val drive = Drive("fl", "fr", "bl", "br")
