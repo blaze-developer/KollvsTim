@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.component
+package org.firstinspires.ftc.teamcode.logging
 
 import dev.nextftc.core.components.Component
 import dev.nextftc.ftc.ActiveOpMode
@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.logging.structure.LogTable
 import org.firstinspires.ftc.teamcode.logging.structure.LoggableInputs
 import kotlin.system.exitProcess
 
-object Logger : Component {
+object Logger {
     private var table: LogTable = LogTable(0)
 
     private val logReceivers: MutableList<LogReceiver> = mutableListOf()
@@ -30,11 +30,11 @@ object Logger : Component {
             inputs.toLog(LogTable(System.nanoTime()))
         }
     }
-    
+
     fun output(key: String, value: String) = table.put(key, value)
 
     /** Sets up the packet for this loop. Runs before user code. **/
-    override fun preUpdate() {
+    fun preUser() {
         // Update timestamps and tables from replay
         if (hasReplaySource) {
             val updated = logSource?.updateTable(table) ?: false
@@ -51,7 +51,7 @@ object Logger : Component {
     }
 
     /** Sends packets and logs data. Runs after user code. **/
-    override fun postUpdate() {
+    fun postUser() {
         // Log Gamepad Inputs
         if (!hasReplaySource) {
             ActiveOpMode.gamepad1.writeToLog(table)
@@ -60,7 +60,4 @@ object Logger : Component {
 
         logReceivers.forEach { it.receive(table) }
     }
-
-    override fun preWaitForStart() = preUpdate()
-    override fun postWaitForStart() = postUpdate()
 }

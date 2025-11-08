@@ -14,7 +14,7 @@ import dev.nextftc.ftc.Gamepads
 import dev.nextftc.hardware.impl.Direction
 import dev.nextftc.hardware.impl.IMUEx
 import dev.nextftc.hardware.impl.MotorEx
-import org.firstinspires.ftc.teamcode.component.Logger
+import org.firstinspires.ftc.teamcode.logging.Logger
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.max

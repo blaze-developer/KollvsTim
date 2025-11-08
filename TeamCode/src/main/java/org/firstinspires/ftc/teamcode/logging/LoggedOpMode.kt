@@ -2,17 +2,19 @@ package org.firstinspires.ftc.teamcode.logging
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl
 import dev.nextftc.core.commands.CommandManager
 import dev.nextftc.core.components.Component
 import dev.nextftc.ftc.components.Initializer
-import org.firstinspires.ftc.teamcode.component.Logger
+import org.firstinspires.ftc.teamcode.component.LoggerComponent
+import org.firstinspires.ftc.teamcode.logging.Logger
 import org.firstinspires.ftc.teamcode.logging.inputs.writeToLog
 import org.firstinspires.ftc.teamcode.logging.structure.LogTable
 import org.firstinspires.ftc.teamcode.logging.structure.LoggableInputs
 
 abstract class LoggedNextFTCOpMode : LinearOpMode() {
 
-    private val _components: MutableSet<Component> = mutableSetOf(Logger, CommandManager)
+    private val _components: MutableSet<Component> = mutableSetOf(LoggerComponent, CommandManager)
     val components: Set<Component> by ::_components
 
     fun addComponents(vararg components: Component) {

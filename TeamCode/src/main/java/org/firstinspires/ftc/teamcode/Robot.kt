@@ -5,7 +5,7 @@ import dev.nextftc.core.components.BindingsComponent
 import dev.nextftc.core.components.SubsystemComponent
 import dev.nextftc.ftc.NextFTCOpMode
 import dev.nextftc.ftc.components.BulkReadComponent
-import org.firstinspires.ftc.teamcode.component.Logger
+import org.firstinspires.ftc.teamcode.logging.Logger
 import org.firstinspires.ftc.teamcode.component.SubsystemRegistry
 import org.firstinspires.ftc.teamcode.logging.LoggedNextFTCOpMode
 import org.firstinspires.ftc.teamcode.logging.dataflow.ftcdashboard.FTCDashboard

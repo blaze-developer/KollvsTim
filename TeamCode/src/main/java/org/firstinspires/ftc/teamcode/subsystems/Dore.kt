@@ -6,7 +6,7 @@ import dev.nextftc.core.commands.groups.SequentialGroup
 import dev.nextftc.core.units.Angle
 import dev.nextftc.core.units.deg
 import dev.nextftc.hardware.impl.ServoEx
-import org.firstinspires.ftc.teamcode.component.Logger
+import org.firstinspires.ftc.teamcode.logging.Logger
 import kotlin.time.Duration.Companion.seconds
 
 class Dore : SubsystemBase() {
