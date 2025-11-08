@@ -22,58 +22,12 @@ import kotlin.math.sign
 import kotlin.math.sin
 import kotlin.time.Duration
 
-class Drive(flName: String, frName: String, blName: String, brName: String) : SubsystemBase() {
-    private val frontLeft = MotorEx(flName).brakeMode()
-    private val frontRight = MotorEx(frName).brakeMode().reversed()
-    private val backLeft = MotorEx(blName).brakeMode()
-    private val backRight = MotorEx(brName).brakeMode().reversed()
-    private val imu = IMUEx("imu", Direction.UP, Direction.RIGHT).zeroed()
-
-    private val encoderConstants by lazy {
-        DriveEncoderConstants()
-            .leftFrontMotorName(flName)
-            .rightFrontMotorName(frName)
-            .leftRearMotorName(blName)
-            .rightRearMotorName(brName)
-            .leftFrontEncoderDirection(Encoder.FORWARD)
-            .rightFrontEncoderDirection(Encoder.REVERSE)
-            .leftRearEncoderDirection(Encoder.FORWARD)
-            .rightRearEncoderDirection(Encoder.REVERSE)
-            .forwardTicksToInches(1.0)
-            .strafeTicksToInches(1.0)
-            .turnTicksToInches(1.0)
-            .robotLength(1.0)
-            .robotWidth(1.0)
-    }
-
-    private val mecanumConstants by lazy {
-        MecanumConstants()
-            .leftFrontMotorName(flName)
-            .rightFrontMotorName(frName)
-            .leftRearMotorName(blName)
-            .rightRearMotorName(brName)
-    }
-
-    private val follower by lazy {
-        FollowerBuilder(FollowerConstants(), ActiveOpMode.hardwareMap)
-            .driveEncoderLocalizer(encoderConstants)
-            .mecanumDrivetrain(mecanumConstants)
-            .build()
-    }
-
-    var pose: Pose
-        get() = follower.pose
-        set(value) { follower.pose = value }
+class Drive(private val io: DriveIO) : SubsystemBase() {
+    private val inputs = DriveInputs()
 
     override fun periodic() {
-        with(Logger) {
-            log("Drive/FlPower", frontLeft.power)
-            log("Drive/FrPower", frontRight.power)
-            log("Drive/BlPower", backLeft.power)
-            log("Drive/BrPower", backRight.power)
-            log("Drive/YawRads", imu().inRad)
-//            log("Odometry/Robot", pose)
-        }
+        io.updateInputs(inputs)
+        Logger.processInputs("Drive", inputs)
     }
 
     fun runFieldPowersCmd(fieldX: Double, fieldY: Double, fieldTheta: Double) = runOnce {
@@ -81,7 +35,7 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
     }.setIsDone { false }
 
     private fun runFieldPowers(fieldX: Double, fieldY: Double, fieldTheta: Double) {
-        val heading = imu().inRad
+        val heading = inputs.yawRads
         val robotX = -(fieldX * sin(-heading) + fieldY * cos(-heading))
         val robotY = fieldX * cos(-heading) - fieldY * sin(-heading)
 
@@ -92,10 +46,12 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
         val denominator =
             max(robotX.absoluteValue + robotY.absoluteValue + robotTheta.absoluteValue, 1.0)
 
-        frontLeft.power = (robotY + robotX + robotTheta) / denominator
-        frontRight.power = (robotY - robotX - robotTheta) / denominator
-        backLeft.power = (robotY - robotX + robotTheta) / denominator
-        backRight.power = (robotY + robotX - robotTheta) / denominator
+        io.runPowers(
+            fl = (robotY + robotX + robotTheta) / denominator,
+            fr = (robotY - robotX - robotTheta) / denominator,
+            bl = (robotY - robotX + robotTheta) / denominator,
+            br = (robotY + robotX - robotTheta) / denominator
+        )
     }
 
     fun runRobotPowersCmd(robotX: Double, robotY: Double, robotTheta: Double) = run {
@@ -113,7 +69,7 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
 
         runFieldPowers(adjustedX, adjustedY, theta())
     }
-    val zeroIMU = runOnce { imu.zero() }
+    val zeroIMU = runOnce { io.zeroIMU() }
 
     val stop = runFieldPowersCmd(0.0, 0.0, 0.0)
 
@@ -130,5 +86,4 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
     }
 
     private operator fun Range.invoke() = get()
-    private operator fun IMUEx.invoke() = get()
 }

@@ -14,6 +14,6 @@ import org.firstinspires.ftc.teamcode.RobotOpMode
 class Teleop : RobotOpMode() {
     override fun onStartButtonPressed(): Unit = with(Gamepads.gamepad1) {
         y and b whenBecomesTrue drive.zeroIMU
-        rightTrigger.asButton { it > 0.5 } whenBecomesTrue dore.place
+//        rightTrigger.asButton { it > 0.5 } whenBecomesTrue dore.place
     }
 }

@@ -22,11 +22,9 @@ object Logger {
 
     fun processInputs(key: String, inputs: LoggableInputs) {
         if(hasReplaySource) {
-            inputs.fromLog(LogTable(System.nanoTime()))
-
-            ActiveOpMode.opModeIsActive
+            inputs.fromLog(table)
         } else {
-            inputs.toLog(LogTable(System.nanoTime()))
+            inputs.toLog(table)
         }
     }
 
@@ -36,6 +34,14 @@ object Logger {
     fun log(key: String, value: Long) = table.put(key, value)
     fun log(key: String, value: Float) = table.put(key, value)
     fun log(key: String, value: Double) = table.put(key, value)
+
+    fun start() {
+        logReceivers.forEach { it.start() }
+    }
+
+    fun stop() {
+        logReceivers.forEach { it.stop() }
+    }
 
     /** Sets up the packet for this loop. Runs before user code. **/
     fun preUser() {
@@ -50,7 +56,7 @@ object Logger {
             ActiveOpMode.gamepad1.replayFromTable(table)
             ActiveOpMode.gamepad2.replayFromTable(table)
         } else {
-            table.timestamp = System.nanoTime()
+            table.timestamp = System.nanoTime() / 1000
         }
     }
 

@@ -9,11 +9,12 @@ import org.firstinspires.ftc.teamcode.logging.Logger
 import org.firstinspires.ftc.teamcode.component.SubsystemRegistry
 import org.firstinspires.ftc.teamcode.logging.LoggedNextFTCOpMode
 import org.firstinspires.ftc.teamcode.logging.dataflow.ftcdashboard.FTCDashboard
+import org.firstinspires.ftc.teamcode.logging.dataflow.rlog.RLOGServer
 import org.firstinspires.ftc.teamcode.subsystems.drive.Drive
+import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIO
 
 abstract class RobotOpMode : LoggedNextFTCOpMode() {
-    protected val drive = Drive("fl", "fr", "bl", "br")
-    protected val dore = Dore()
+    protected val drive = Drive(object : DriveIO {})
 
     init {
         addComponents(
@@ -22,8 +23,12 @@ abstract class RobotOpMode : LoggedNextFTCOpMode() {
             BindingsComponent
         )
 
+        hardwareMap = null
+
         Logger.addReceiver(FTCDashboard)
-    }   
+        Logger.addReceiver(RLOGServer())
+
+    }
 }
 
 abstract class AutoMode : RobotOpMode() {

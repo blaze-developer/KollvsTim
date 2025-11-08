@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.logging.structure
 
-import org.firstinspires.ftc.teamcode.logging.structure.LogTable.LogValue.Companion.asLogValue
+import org.firstinspires.ftc.teamcode.logging.structure.LogValue.Companion.asLogValue
 
 class LogTable(
     var timestamp: Long,
@@ -32,9 +32,6 @@ class LogTable(
     /** Put a Double into the table. **/
     fun put(key: String, value: Double) = put(key, value.asLogValue())
 
-    /** Put a Byte into the table. **/
-    fun put(key: String, value: Byte) = put(key, value.asLogValue())
-
     /** Put a ByteArray into the table. **/
     fun put(key: String, value: ByteArray) = put(key, value.asLogValue())
 
@@ -62,38 +59,9 @@ class LogTable(
     /** Get a Double from the table **/
     fun get(key: String, default: Double) = mutableEntries[key]?.value as? Double ?: default
 
-    /** Get a Byte from the table **/
-    fun get(key: String, default: Byte) = mutableEntries[key]?.value as? Byte ?: default
-
     /** Get a ByteArray from the table **/
     fun get(key: String, default: ByteArray) = mutableEntries[key]?.value as? ByteArray ?: default
 
     /** Get a DoubleArray from the table **/
     fun get(key: String, default: DoubleArray) = mutableEntries[key]?.value as? ByteArray ?: default
-
-    class LogValue(val value: Any, val type: LoggableType) {
-        companion object {
-            fun String.asLogValue() = LogValue(this, LoggableType.String)
-            fun Boolean.asLogValue() = LogValue(this, LoggableType.Boolean)
-            fun Int.asLogValue() = LogValue(this, LoggableType.Boolean)
-            fun Long.asLogValue() = LogValue(this, LoggableType.Boolean)
-            fun Float.asLogValue() = LogValue(this, LoggableType.Boolean)
-            fun Double.asLogValue() = LogValue(this, LoggableType.Boolean)
-            fun Byte.asLogValue() = LogValue(this, LoggableType.Boolean)
-            fun ByteArray.asLogValue() = LogValue(this, LoggableType.Boolean)
-            fun DoubleArray.asLogValue() = LogValue(this, LoggableType.Boolean)
-        }
-    }
-
-    enum class LoggableType {
-        String,
-        Boolean,
-        Int,
-        Long,
-        Float,
-        Double,
-        Byte,
-        ByteArray,
-        DoubleArray
-    }
 }
