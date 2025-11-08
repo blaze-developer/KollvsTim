@@ -10,7 +10,5 @@ class LogTable(
         get() = entries.toMap()
 
     fun put(key: String, value: Any) = entries.put(key, value)
-
-    fun get(key: String, default: Long): Long = (entries[key] as Long?) ?: default
-    fun get(key: String, default: Boolean): Boolean = (entries[key] as Boolean?) ?: default
+    fun <T> get(key: String, default: T): T = (entries[key] as T?) ?: default
 }

@@ -6,6 +6,7 @@ import dev.nextftc.core.commands.CommandManager
 import dev.nextftc.core.components.Component
 import dev.nextftc.ftc.components.Initializer
 import org.firstinspires.ftc.teamcode.component.Logger
+import org.firstinspires.ftc.teamcode.logging.inputs.writeToLog
 import org.firstinspires.ftc.teamcode.logging.structure.LogTable
 import org.firstinspires.ftc.teamcode.logging.structure.LoggableInputs
 

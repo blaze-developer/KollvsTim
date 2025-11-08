@@ -68,12 +68,12 @@ class Drive(flName: String, frName: String, blName: String, brName: String) : Su
 
     override fun periodic() {
         with(Logger) {
-            log("Drive/FlPower", frontLeft.power)
-            log("Drive/FrPower", frontRight.power)
-            log("Drive/BlPower", backLeft.power)
-            log("Drive/BrPower", backRight.power)
-            log("Drive/YawRads", imu().inRad)
-            log("Odometry/Robot", pose)
+            output("Drive/FlPower", frontLeft.power)
+            output("Drive/FrPower", frontRight.power)
+            output("Drive/BlPower", backLeft.power)
+            output("Drive/BrPower", backRight.power)
+            output("Drive/YawRads", imu().inRad)
+            output("Odometry/Robot", pose)
         }
     }
 
