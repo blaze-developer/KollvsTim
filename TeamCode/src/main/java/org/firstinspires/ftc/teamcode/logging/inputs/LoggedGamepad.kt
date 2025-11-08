@@ -4,10 +4,10 @@ import com.qualcomm.robotcore.hardware.Gamepad
 import org.firstinspires.ftc.teamcode.logging.structure.LogTable
 
 fun Gamepad.writeToLog(table: LogTable) {
-    table.put("Joystick$gamepadId", toByteArray())
+    table.put("Gamepads/Joystick$gamepadId", toByteArray())
 }
 
 fun Gamepad.replayFromTable(table: LogTable) {
-    val bytes = table.get("Joystick$gamepadId", toByteArray())
+    val bytes = table.get("Gamepads/Joystick$gamepadId", toByteArray())
     fromByteArray(bytes)
 }

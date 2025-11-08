@@ -24,7 +24,7 @@ abstract class RobotOpMode : LoggedNextFTCOpMode() {
         )
 
         Logger.addReceiver(FTCDashboard)
-    }
+    }   
 }
 
 abstract class AutoMode : RobotOpMode() {

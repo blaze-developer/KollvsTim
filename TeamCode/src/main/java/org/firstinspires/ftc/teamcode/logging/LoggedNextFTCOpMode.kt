@@ -2,13 +2,10 @@ package org.firstinspires.ftc.teamcode.logging
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import com.qualcomm.robotcore.eventloop.opmode.OpModeManagerImpl
 import dev.nextftc.core.commands.CommandManager
 import dev.nextftc.core.components.Component
 import dev.nextftc.ftc.components.Initializer
 import org.firstinspires.ftc.teamcode.component.LoggerComponent
-import org.firstinspires.ftc.teamcode.logging.Logger
-import org.firstinspires.ftc.teamcode.logging.inputs.writeToLog
 import org.firstinspires.ftc.teamcode.logging.structure.LogTable
 import org.firstinspires.ftc.teamcode.logging.structure.LoggableInputs
 
@@ -27,7 +24,7 @@ abstract class LoggedNextFTCOpMode : LinearOpMode() {
 
     private val inputs = object : LoggableInputs {
         var isActive = false
-        var inInit = false
+        var inInit = true
         var stopRequested = false
 
         override fun toLog(table: LogTable) {
@@ -57,7 +54,6 @@ abstract class LoggedNextFTCOpMode : LinearOpMode() {
         try {
             components.forEach { it.preInit() }
             onInit()
-            Logger.output("RealMetadata/OpMode", "LoggedOpMode")
             components.reversed().forEach { it.postInit() }
 
             // Wait for start

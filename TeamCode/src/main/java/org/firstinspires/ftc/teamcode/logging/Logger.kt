@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.logging
 
-import dev.nextftc.core.components.Component
 import dev.nextftc.ftc.ActiveOpMode
 import org.firstinspires.ftc.teamcode.logging.dataflow.LogReceiver
 import org.firstinspires.ftc.teamcode.logging.dataflow.ReplaySource
@@ -14,8 +13,8 @@ object Logger {
     private var table: LogTable = LogTable(0)
 
     private val logReceivers: MutableList<LogReceiver> = mutableListOf()
-    private var logSource: ReplaySource? = null
-    val hasReplaySource: Boolean get() = logSource != null
+    var replaySource: ReplaySource? = null
+    val hasReplaySource: Boolean get() = replaySource != null
 
     val timestamp: Long get() = table.timestamp
 
@@ -31,13 +30,18 @@ object Logger {
         }
     }
 
-    fun output(key: String, value: String) = table.put(key, value)
+    fun log(key: String, value: String) = table.put(key, value)
+    fun log(key: String, value: Boolean) = table.put(key, value)
+    fun log(key: String, value: Int) = table.put(key, value)
+    fun log(key: String, value: Long) = table.put(key, value)
+    fun log(key: String, value: Float) = table.put(key, value)
+    fun log(key: String, value: Double) = table.put(key, value)
 
     /** Sets up the packet for this loop. Runs before user code. **/
     fun preUser() {
         // Update timestamps and tables from replay
         if (hasReplaySource) {
-            val updated = logSource?.updateTable(table) ?: false
+            val updated = replaySource?.updateTable(table) ?: false
             if (!updated) {
                 exitProcess(1)
             }

@@ -9,7 +9,7 @@ object FTCDashboard : LogReceiver {
     override fun receive(table: LogTable) {
         val packet = TelemetryPacket()
 
-        table.data.forEach {
+        table.entries.forEach {
             packet.put(it.key, it.value)
         }
 
