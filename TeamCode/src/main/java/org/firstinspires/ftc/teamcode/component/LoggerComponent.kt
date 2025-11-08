@@ -5,8 +5,6 @@ import org.firstinspires.ftc.teamcode.logging.Logger
 
 /** A NextFTC Component to handle and periodically update the logger. **/
 object LoggerComponent : Component {
-    override fun preInit() = Logger.start()
-
     override fun preUpdate() = Logger.preUser()
     override fun postUpdate() = Logger.postUser()
 

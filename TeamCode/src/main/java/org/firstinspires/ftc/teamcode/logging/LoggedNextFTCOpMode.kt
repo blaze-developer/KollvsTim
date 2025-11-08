@@ -28,9 +28,10 @@ abstract class LoggedNextFTCOpMode : LinearOpMode() {
         var stopRequested = false
 
         override fun toLog(table: LogTable) {
-            table.put("LoggedOpMode/isActive", opModeIsActive())
-            table.put("LoggedOpMode/isInit", opModeInInit())
-            table.put("LoggedOpMode/stopRequested", isStopRequested)
+            table.put("LoggedOpMode/isActive", isActive)
+            table.put("LoggedOpMode/isInit", inInit)
+            table.put("LoggedOpMode/stopRequested", stopRequested)
+            table.put("DS:enabled", isActive)
         }
 
         override fun fromLog(table: LogTable) {
@@ -52,6 +53,7 @@ abstract class LoggedNextFTCOpMode : LinearOpMode() {
 
     override fun runOpMode() {
         try {
+            Logger.start()
             components.forEach { it.preInit() }
             onInit()
             components.reversed().forEach { it.postInit() }
@@ -83,6 +85,7 @@ abstract class LoggedNextFTCOpMode : LinearOpMode() {
             components.forEach { it.preStop() }
             onStop()
             components.forEach { it.postStop() }
+            Logger.stop()
         } catch (e: Exception) {
             // Rethrow the exception as a RuntimeException with the original stack trace at the top
             val runtimeException = RuntimeException(e.message)

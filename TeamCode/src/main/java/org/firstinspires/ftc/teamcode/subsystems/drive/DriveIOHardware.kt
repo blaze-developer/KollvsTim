@@ -28,5 +28,21 @@ class DriveIOHardware(flName: String, frName: String, blName: String, brName: St
 
     override fun updateInputs(inputs: DriveInputs) {
         inputs.yawRads = imu.get().inRad
+
+        inputs.flPos = frontLeft.currentPosition
+        inputs.flVel = frontLeft.velocity
+        inputs.flTicks = frontLeft.rawTicks
+
+        inputs.frPos = frontRight.currentPosition
+        inputs.frVel = frontRight.velocity
+        inputs.frTicks = frontRight.rawTicks
+
+        inputs.blPos = backLeft.currentPosition
+        inputs.blVel = backLeft.velocity
+        inputs.blTicks = backLeft.rawTicks
+
+        inputs.brPos = backRight.currentPosition
+        inputs.brVel = backRight.velocity
+        inputs.brTicks = backRight.rawTicks
     }
 }

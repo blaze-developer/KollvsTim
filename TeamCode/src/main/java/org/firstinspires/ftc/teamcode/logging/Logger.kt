@@ -53,8 +53,8 @@ object Logger {
             }
 
             // Replay Gamepads
-            ActiveOpMode.gamepad1.replayFromTable(table)
-            ActiveOpMode.gamepad2.replayFromTable(table)
+            ActiveOpMode.gamepad1.replayFromTable(table, 1)
+            ActiveOpMode.gamepad2.replayFromTable(table, 2)
         } else {
             table.timestamp = System.nanoTime() / 1000
         }
@@ -64,8 +64,8 @@ object Logger {
     fun postUser() {
         // Log Gamepad Inputs
         if (!hasReplaySource) {
-            ActiveOpMode.gamepad1.writeToLog(table)
-            ActiveOpMode.gamepad2.writeToLog(table)
+            ActiveOpMode.gamepad1.writeToLog(table, 1)
+            ActiveOpMode.gamepad2.writeToLog(table, 2)
         }
 
         logReceivers.forEach { it.receive(table) }
