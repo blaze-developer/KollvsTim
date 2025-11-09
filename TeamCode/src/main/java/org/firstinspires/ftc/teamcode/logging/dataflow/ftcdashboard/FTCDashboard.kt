@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import org.firstinspires.ftc.teamcode.logging.dataflow.LogReceiver
 import org.firstinspires.ftc.teamcode.logging.structure.LogTable
-import org.firstinspires.ftc.teamcode.logging.structure.LoggableType
 
 object FTCDashboard : LogReceiver {
     override fun receive(table: LogTable) {
@@ -12,7 +11,7 @@ object FTCDashboard : LogReceiver {
 
         packet.put("Timestamp", table.timestamp)
 
-        table.entries.forEach { (key, field) ->
+        table.data.forEach { (key, field) ->
             packet.put(key, field.value)
 
 //            when (field.type) {

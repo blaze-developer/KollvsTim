@@ -8,6 +8,9 @@ import org.firstinspires.ftc.teamcode.logging.inputs.writeToLog
 import org.firstinspires.ftc.teamcode.logging.structure.LogTable
 import org.firstinspires.ftc.teamcode.logging.structure.LoggableInputs
 import kotlin.system.exitProcess
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.microseconds
+import kotlin.time.Duration.Companion.nanoseconds
 
 object Logger {
     private var table: LogTable = LogTable(0)
@@ -16,15 +19,21 @@ object Logger {
     var replaySource: ReplaySource? = null
     val hasReplaySource: Boolean get() = replaySource != null
 
-    val timestamp: Long get() = table.timestamp
+    /**
+     * The synchronized timestamp of the current cycle,
+     * this should be used for all shared logic as it is deterministic and replayable.
+     **/
+    val timestamp: Duration get() = table.timestamp
 
-    fun addReceiver(receiver: LogReceiver) = logReceivers.add(receiver)
+    /** Adds a receiver to accept log data from the Logger and use for streaming, logfiles, etc. **/
+    operator fun plusAssign(receiver: LogReceiver) { logReceivers.add(receiver) }
 
-    fun processInputs(key: String, inputs: LoggableInputs) {
+    /** Processes an input for this loop, either logging or replaying from the table. **/
+    fun processInputs(subtableName: String, inputs: LoggableInputs) {
         if(hasReplaySource) {
-            inputs.fromLog(table)
+            inputs.fromLog(table.subtable(subtableName))
         } else {
-            inputs.toLog(table)
+            inputs.toLog(table.subtable(subtableName))
         }
     }
 
@@ -56,7 +65,7 @@ object Logger {
             ActiveOpMode.gamepad1.replayFromTable(table, 1)
             ActiveOpMode.gamepad2.replayFromTable(table, 2)
         } else {
-            table.timestamp = System.nanoTime() / 1000
+            table.timestamp = System.nanoTime().nanoseconds
         }
     }
 

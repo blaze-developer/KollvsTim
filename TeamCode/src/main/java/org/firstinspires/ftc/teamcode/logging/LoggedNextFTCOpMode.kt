@@ -5,21 +5,21 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import dev.nextftc.core.commands.CommandManager
 import dev.nextftc.core.components.Component
 import dev.nextftc.ftc.components.Initializer
-import org.firstinspires.ftc.teamcode.component.LoggerComponent
 import org.firstinspires.ftc.teamcode.logging.structure.LogTable
 import org.firstinspires.ftc.teamcode.logging.structure.LoggableInputs
+import java.time.temporal.TemporalUnit
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.DurationUnit
+import kotlin.time.toJavaDuration
 
 abstract class LoggedNextFTCOpMode : LinearOpMode() {
 
-    private val _components: MutableSet<Component> = mutableSetOf(LoggerComponent, CommandManager)
+    private val _components: MutableSet<Component> = mutableSetOf(CommandManager)
     val components: Set<Component> by ::_components
 
     fun addComponents(vararg components: Component) {
         _components.addAll(components)
-    }
-
-    override fun getRuntime(): Double {
-        return Logger.timestamp.toDouble() / 1_000_000
     }
 
     private val inputs = object : LoggableInputs {
@@ -27,28 +27,26 @@ abstract class LoggedNextFTCOpMode : LinearOpMode() {
         var inInit = true
         var stopRequested = false
 
+        fun process() {
+            if (!Logger.hasReplaySource) {
+                inInit = opModeInInit()
+                isActive = opModeIsActive()
+                stopRequested = isStopRequested
+            }
+            Logger.processInputs("LoggedOpMode", this)
+        }
+
         override fun toLog(table: LogTable) {
-            table.put("LoggedOpMode/isActive", isActive)
-            table.put("LoggedOpMode/isInit", inInit)
-            table.put("LoggedOpMode/stopRequested", stopRequested)
-            table.put("DS:enabled", isActive)
+            table.put("isActive", isActive)
+            table.put("inInit", inInit)
+            table.put("stopRequested", stopRequested)
         }
 
         override fun fromLog(table: LogTable) {
-            isActive = table.get("LoggedOpMode/isActive", isActive)
-            inInit = table.get("LoggedOpMode/isInit", inInit)
-            stopRequested = table.get("LoggedOpMode/stopRequested", stopRequested)
+            isActive = table.get("isActive", isActive)
+            inInit = table.get("inInit", inInit)
+            stopRequested = table.get("stopRequested", stopRequested)
         }
-    }
-
-    /** Updates and logs LoggedOpMode inputs that are essential for OpMode functionality **/
-    private fun updateInputs() {
-        if (!Logger.hasReplaySource) {
-            inputs.inInit = opModeInInit()
-            inputs.isActive = opModeIsActive()
-            inputs.stopRequested = isStopRequested
-        }
-        Logger.processInputs("LoggedOpMode", inputs)
     }
 
     override fun runOpMode() {
@@ -60,10 +58,12 @@ abstract class LoggedNextFTCOpMode : LinearOpMode() {
 
             // Wait for start
             while (inputs.inInit) {
+                Logger.preUser()
                 components.forEach { it.preWaitForStart() }
-                updateInputs()
+                inputs.process()
                 onWaitForStart()
                 components.reversed().forEach { it.postWaitForStart() }
+                Logger.postUser()
             }
 
             // If we pressed stop after init (instead of start) we want to skip the rest of the OpMode
@@ -74,11 +74,13 @@ abstract class LoggedNextFTCOpMode : LinearOpMode() {
                 components.reversed().forEach { it.postStartButtonPressed() }
 
                 while (inputs.isActive) {
+                    Logger.preUser()
                     components.forEach { it.preUpdate() }
-                    updateInputs()
+                    inputs.process()
                     CommandManager.run()
                     onUpdate()
                     components.reversed().forEach { it.postUpdate() }
+                    Logger.postUser()
                 }
             }
 

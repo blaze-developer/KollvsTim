@@ -1,18 +1,47 @@
 package org.firstinspires.ftc.teamcode.logging.structure
 
 import org.firstinspires.ftc.teamcode.logging.structure.LogValue.Companion.asLogValue
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.microseconds
+import kotlin.time.DurationUnit
 
 class LogTable(
-    var timestamp: Long,
-    val prefix: String = "/"
+    private val sharedTimestamp: SharedTimestamp,
+    private val prefix: String = "/",
+    private val mutableData: MutableMap<String, LogValue> = mutableMapOf(),
 ) {
-    // The data in the table, this is kept private so we can filter for types that we want.
-    private val mutableEntries: MutableMap<String, LogValue> = mutableMapOf()
-    val entries: Map<String, LogValue>
-        get() = mutableEntries.toMap()
+    /** Object to hold a timestamp that can be shared between subtables. **/
+    class SharedTimestamp(var value: Duration)
+
+    /** Creates a LogTable based on a timestamp as the root table. **/
+    constructor(timestamp: Duration) : this(SharedTimestamp(timestamp))
+
+    /** Creates a LogTable based on a timestamp in microseconds as the root table. **/
+    constructor(timestamp: Long) : this(timestamp.microseconds)
+
+    /** The current timestamp of the LogTable stored as a unitless Duration for easy comparisons **/
+    var timestamp: Duration
+        get() = sharedTimestamp.value
+        set(value) { sharedTimestamp.value = value }
+
+    /** The current timestamp of ths LogTable stored in Seconds **/
+    val timestampSeconds: Double get() = timestamp.toDouble(DurationUnit.SECONDS)
+
+    val data: Map<String, LogValue>
+        get() = mutableData.toMap()
+
+    /**
+     * Gets a subtable of this LogTable with a specified name.
+     * Changes to this subtable will be reflected in the parent table.
+     */
+    fun subtable(name: String) = LogTable(
+        this.sharedTimestamp,
+        this.prefix + name + "/",
+        this.mutableData
+    )
 
     /** Put a raw LogValue into the table. **/
-    fun put(key: String, value: LogValue) = mutableEntries.put(key, value)
+    fun put(key: String, value: LogValue) = mutableData.put(prefix + key, value)
 
     /** Put a String into the table. **/
     fun put(key: String, value: String) = put(key, value.asLogValue())
@@ -39,29 +68,29 @@ class LogTable(
     fun put(key: String, value: DoubleArray) = put(key, value.asLogValue())
 
     /** Get a raw LogValue from the table **/
-    fun get(key: String, default: LogValue) = mutableEntries[key] ?: default
+    fun get(key: String, default: LogValue) = mutableData[prefix + key] ?: default
 
     /** Get a String from the table **/
-    fun get(key: String, default: String) = mutableEntries[key]?.value as? String ?: default
+    fun get(key: String, default: String) = get(key, default.asLogValue()).value as? String ?: default
 
     /** Get a Boolean from the table **/
-    fun get(key: String, default: Boolean) = mutableEntries[key]?.value as? Boolean ?: default
+    fun get(key: String, default: Boolean) = get(key, default.asLogValue()).value as? Boolean ?: default
 
     /** Get a Int from the table **/
-    fun get(key: String, default: Int) = mutableEntries[key]?.value as? Int ?: default
+    fun get(key: String, default: Int) = get(key, default.asLogValue()).value as? Int ?: default
 
     /** Get a Long from the table **/
-    fun get(key: String, default: Long) = mutableEntries[key]?.value as? Long ?: default
+    fun get(key: String, default: Long) = get(key, default.asLogValue()).value as? Long ?: default
 
     /** Get a Float from the table **/
-    fun get(key: String, default: Float) = mutableEntries[key]?.value as? Float ?: default
+    fun get(key: String, default: Float) = get(key, default.asLogValue()).value as? Float ?: default
 
     /** Get a Double from the table **/
-    fun get(key: String, default: Double) = mutableEntries[key]?.value as? Double ?: default
+    fun get(key: String, default: Double) = get(key, default.asLogValue()).value as? Double ?: default
 
     /** Get a ByteArray from the table **/
-    fun get(key: String, default: ByteArray) = mutableEntries[key]?.value as? ByteArray ?: default
+    fun get(key: String, default: ByteArray) = get(key, default.asLogValue()).value as? ByteArray ?: default
 
     /** Get a DoubleArray from the table **/
-    fun get(key: String, default: DoubleArray) = mutableEntries[key]?.value as? ByteArray ?: default
+    fun get(key: String, default: DoubleArray) = get(key, default.asLogValue()).value as? DoubleArray ?: default
 }

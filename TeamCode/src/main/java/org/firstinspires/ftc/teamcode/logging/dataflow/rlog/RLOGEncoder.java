@@ -7,6 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.logging.dataflow.rlog;
 
+import static kotlin.time.DurationKt.toDuration;
+
 import org.firstinspires.ftc.teamcode.logging.structure.LogTable;
 import org.firstinspires.ftc.teamcode.logging.structure.LogValue;
 
@@ -17,6 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.time.Duration;
+import kotlin.time.DurationKt;
+import kotlin.time.DurationUnit;
+
 /**
  * Converts log tables to the RLOG format. Based on RLOG R2 with support for custom type strings.
  */
@@ -25,7 +31,7 @@ class RLOGEncoder {
 
     private ByteBuffer nextOutput;
     private boolean isFirstTable = true;
-    private LogTable lastTable = new LogTable(0, "/");
+    private LogTable lastTable = new LogTable(0);
     private Map<String, Short> keyIDs = new HashMap<>();
     private Map<String, String> keyTypes = new HashMap<>();
     private short nextKeyID = 0;
@@ -43,7 +49,7 @@ class RLOGEncoder {
         buffers.add(ByteBuffer.allocate(1).put(logRevision));
 
         // Encode timestamp
-        buffers.add(encodeTimestamp(lastTable.getTimestamp() / 1000000.0));
+        buffers.add(encodeTimestamp(lastTable.getTimestampSeconds()));
 
         // Encode key IDs
         for (Map.Entry<String, Short> keyID : keyIDs.entrySet()) {
@@ -51,7 +57,7 @@ class RLOGEncoder {
         }
 
         // Encode fields
-        for (Map.Entry<String, LogValue> field : lastTable.getEntries().entrySet()) {
+        for (Map.Entry<String, LogValue> field : lastTable.getData().entrySet()) {
             buffers.add(encodeValue(keyIDs.get(field.getKey()), field.getValue()));
         }
 
@@ -71,8 +77,8 @@ class RLOGEncoder {
     public void encodeTable(LogTable table, boolean includeRevision) {
         List<ByteBuffer> buffers = new ArrayList<>();
 
-        Map<String, LogValue> newMap = table.getEntries();
-        Map<String, LogValue> oldMap = lastTable.getEntries();
+        Map<String, LogValue> newMap = table.getData();
+        Map<String, LogValue> oldMap = lastTable.getData();
 
         // Encode log revision
         if (isFirstTable && includeRevision) {
@@ -81,7 +87,7 @@ class RLOGEncoder {
         }
 
         // Encode timestamp
-        buffers.add(encodeTimestamp(table.getTimestamp() / 1000000.0));
+        buffers.add(encodeTimestamp(table.getTimestampSeconds()));
 
         // Encode new/changed fields
         for (Map.Entry<String, LogValue> field : newMap.entrySet()) {

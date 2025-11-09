@@ -44,13 +44,12 @@ public class RLOGServer implements LogReceiver {
     public void start() {
         thread = new ServerThread(port);
         thread.start();
-        System.out.println("[AdvantageKit] RLOG server started on port " + port);
+        System.out.println("[AdvantageKit] RLOG server started on port " + Integer.toString(port));
     }
 
     public void stop() {
         if (thread != null) {
             thread.close();
-            System.out.println("STOPPED THREAD!!!");
             thread = null;
         }
     }
@@ -76,8 +75,9 @@ public class RLOGServer implements LogReceiver {
     }
 
     private class ServerThread extends Thread {
-        private static final double heartbeatTimeoutSecs = 3.0;
-        // Close connection if heartbeat not received for this length
+        private static final double heartbeatTimeoutSecs =
+                3.0; // Close connection if heartbeat not received for this
+        // length
 
         ServerSocket server;
         Thread broadcastThread;
