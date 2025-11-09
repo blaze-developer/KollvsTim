@@ -15,7 +15,7 @@ import kotlin.time.Duration.Companion.nanoseconds
 object Logger {
     private var table: LogTable = LogTable(0)
 
-    private val logReceivers: MutableList<LogReceiver> = mutableListOf()
+    private val logReceivers = mutableListOf<LogReceiver>()
     var replaySource: ReplaySource? = null
     val hasReplaySource: Boolean get() = replaySource != null
 
@@ -28,6 +28,24 @@ object Logger {
     /** Adds a receiver to accept log data from the Logger and use for streaming, logfiles, etc. **/
     operator fun plusAssign(receiver: LogReceiver) { logReceivers.add(receiver) }
 
+    private val metadata = mutableMapOf<String, String>()
+    fun metadata(key: String, value: String) = metadata.put(key, value)
+
+    fun start() {
+        val metadataTable = table.subtable(
+            if (hasReplaySource) "RealMetadata"
+            else "ReplayMetadata"
+        )
+
+        metadata.forEach { (key, value) -> metadataTable.put(key, value) }
+
+        logReceivers.forEach { it.start() }
+    }
+
+    fun stop() {
+        logReceivers.forEach { it.stop() }
+    }
+
     /** Processes an input for this loop, either logging or replaying from the table. **/
     fun processInputs(subtableName: String, inputs: LoggableInputs) {
         if(hasReplaySource) {
@@ -35,21 +53,6 @@ object Logger {
         } else {
             inputs.toLog(table.subtable(subtableName))
         }
-    }
-
-    fun log(key: String, value: String) = table.put(key, value)
-    fun log(key: String, value: Boolean) = table.put(key, value)
-    fun log(key: String, value: Int) = table.put(key, value)
-    fun log(key: String, value: Long) = table.put(key, value)
-    fun log(key: String, value: Float) = table.put(key, value)
-    fun log(key: String, value: Double) = table.put(key, value)
-
-    fun start() {
-        logReceivers.forEach { it.start() }
-    }
-
-    fun stop() {
-        logReceivers.forEach { it.stop() }
     }
 
     /** Sets up the packet for this loop. Runs before user code. **/
@@ -79,4 +82,11 @@ object Logger {
 
         logReceivers.forEach { it.receive(table) }
     }
+
+    fun log(key: String, value: String) = table.put(key, value)
+    fun log(key: String, value: Boolean) = table.put(key, value)
+    fun log(key: String, value: Int) = table.put(key, value)
+    fun log(key: String, value: Long) = table.put(key, value)
+    fun log(key: String, value: Float) = table.put(key, value)
+    fun log(key: String, value: Double) = table.put(key, value)
 }

@@ -29,6 +29,8 @@ abstract class RobotOpMode : LoggedNextFTCOpMode() {
             BindingsComponent
         )
 
+        Logger.metadata("RunType", mode.name)
+
         if (mode == RobotMode.Replay) Logger.replaySource = TODO("No replay sources implemented.")
 
         Logger += FTCDashboard
