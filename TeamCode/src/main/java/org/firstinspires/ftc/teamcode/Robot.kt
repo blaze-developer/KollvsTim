@@ -29,12 +29,12 @@ abstract class RobotOpMode : LoggedNextFTCOpMode() {
             BindingsComponent
         )
 
-        Logger.metadata("RunType", mode.name)
+        Logger.metadata += "RunType" to mode.name
 
         if (mode == RobotMode.Replay) Logger.replaySource = TODO("No replay sources implemented.")
 
-        Logger += FTCDashboard
-        Logger += RLOGServer()
+        Logger.receivers += FTCDashboard
+        Logger.receivers += RLOGServer()
 
     }
 }

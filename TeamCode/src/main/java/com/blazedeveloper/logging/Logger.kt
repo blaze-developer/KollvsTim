@@ -14,25 +14,33 @@ import kotlin.time.Duration.Companion.nanoseconds
 object Logger {
     private val table: LogTable = LogTable(0)
     private val logReceivers = mutableListOf<LogReceiver>()
-    private val metadata = mutableMapOf<String, String>()
+    private val metadataMap = mutableMapOf<String, String>()
 
     var replaySource: ReplaySource? = null
     val hasReplaySource: Boolean get() = replaySource != null
 
+    fun interface Addable<T> {
+        fun add(toAdd: T)
+        operator fun plusAssign(toAdd: T) = add(toAdd)
+    }
+
     /**
      * The synchronized timestamp of the current cycle,
-     * this should be used for all shared logic as it is deterministic and replayable.
+     * this should be used for all replayed logic as it is deterministic and replayable.
      **/
     val timestamp: Duration get() = table.timestamp
 
-    /** Adds a receiver to accept log data from the Logger and use for streaming, logfiles, etc. **/
-    operator fun plusAssign(receiver: LogReceiver) { logReceivers.add(receiver) }
+    /**
+     * Object that user can add log receivers to that accept log
+     * data from the Logger and use for streaming, logfiles, etc.
+     */
+    val receivers = Addable<LogReceiver> { logReceivers.add(it) }
 
     /**
      * Queues log metadata to be put into the table when
      * the Logger is started.
      */
-    fun metadata(key: String, value: String) = metadata.put(key, value)
+    val metadata = Addable<Pair<String, String>> { metadataMap.put(it.first, it.second) }
 
     /** Starts the Logger and its receivers. */
     fun start() {
@@ -41,7 +49,7 @@ object Logger {
             else "ReplayMetadata"
         )
 
-        metadata.forEach { (key, value) -> metadataTable.put(key, value) }
+        metadataMap.forEach { (key, value) -> metadataTable.put(key, value) }
 
         logReceivers.forEach { it.start() }
     }
