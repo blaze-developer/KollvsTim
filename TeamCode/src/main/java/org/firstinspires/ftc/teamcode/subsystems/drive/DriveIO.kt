@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.drive
 
-import org.firstinspires.ftc.teamcode.logging.structure.LogTable
-import org.firstinspires.ftc.teamcode.logging.structure.LoggableInputs
+import com.blazedeveloper.logging.structure.LogTable
+import com.blazedeveloper.logging.structure.LoggableInputs
 
 interface DriveIO {
     fun runPowers(fl: Double, fr: Double, bl: Double, br: Double) {}

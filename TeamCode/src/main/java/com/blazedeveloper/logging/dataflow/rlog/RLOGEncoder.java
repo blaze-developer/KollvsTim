@@ -5,12 +5,10 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package org.firstinspires.ftc.teamcode.logging.dataflow.rlog;
+package com.blazedeveloper.logging.dataflow.rlog;
 
-import static kotlin.time.DurationKt.toDuration;
-
-import org.firstinspires.ftc.teamcode.logging.structure.LogTable;
-import org.firstinspires.ftc.teamcode.logging.structure.LogValue;
+import com.blazedeveloper.logging.structure.LogTable;
+import com.blazedeveloper.logging.structure.LogValue;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -18,10 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import kotlin.time.Duration;
-import kotlin.time.DurationKt;
-import kotlin.time.DurationUnit;
 
 /**
  * Converts log tables to the RLOG format. Based on RLOG R2 with support for custom type strings.

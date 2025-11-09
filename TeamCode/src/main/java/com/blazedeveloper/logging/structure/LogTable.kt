@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.logging.structure
+package com.blazedeveloper.logging.structure
 
-import org.firstinspires.ftc.teamcode.logging.structure.LogValue.Companion.asLogValue
+import com.blazedeveloper.logging.structure.LogValue.Companion.asLogValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.DurationUnit

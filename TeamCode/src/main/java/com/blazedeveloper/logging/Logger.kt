@@ -1,15 +1,14 @@
-package org.firstinspires.ftc.teamcode.logging
+package com.blazedeveloper.logging
 
+import com.blazedeveloper.logging.dataflow.LogReceiver
+import com.blazedeveloper.logging.dataflow.ReplaySource
+import com.blazedeveloper.logging.inputs.replayFromTable
+import com.blazedeveloper.logging.inputs.writeToLog
+import com.blazedeveloper.logging.structure.LogTable
+import com.blazedeveloper.logging.structure.LoggableInputs
 import dev.nextftc.ftc.ActiveOpMode
-import org.firstinspires.ftc.teamcode.logging.dataflow.LogReceiver
-import org.firstinspires.ftc.teamcode.logging.dataflow.ReplaySource
-import org.firstinspires.ftc.teamcode.logging.inputs.replayFromTable
-import org.firstinspires.ftc.teamcode.logging.inputs.writeToLog
-import org.firstinspires.ftc.teamcode.logging.structure.LogTable
-import org.firstinspires.ftc.teamcode.logging.structure.LoggableInputs
 import kotlin.system.exitProcess
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.Duration.Companion.nanoseconds
 
 object Logger {

@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.logging.dataflow
+package com.blazedeveloper.logging.dataflow
 
-import org.firstinspires.ftc.teamcode.logging.structure.LogTable
-
+import com.blazedeveloper.logging.structure.LogTable
 
 interface ReplaySource {
     fun start()

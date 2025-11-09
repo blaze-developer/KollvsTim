@@ -5,10 +5,10 @@
 // license that can be found in the LICENSE file
 // at the root directory of this project.
 
-package org.firstinspires.ftc.teamcode.logging.dataflow.rlog;
+package com.blazedeveloper.logging.dataflow.rlog;
 
-import org.firstinspires.ftc.teamcode.logging.dataflow.LogReceiver;
-import org.firstinspires.ftc.teamcode.logging.structure.LogTable;
+import com.blazedeveloper.logging.dataflow.LogReceiver;
+import com.blazedeveloper.logging.structure.LogTable;
 
 import java.io.IOException;
 import java.io.InputStream;

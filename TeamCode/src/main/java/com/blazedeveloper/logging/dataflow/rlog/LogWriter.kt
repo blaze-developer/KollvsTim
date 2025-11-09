@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode.logging.dataflow.rlog
+package com.blazedeveloper.logging.dataflow.rlog
 
-import org.firstinspires.ftc.teamcode.logging.dataflow.LogReceiver
-import org.firstinspires.ftc.teamcode.logging.structure.LogTable
+import com.blazedeveloper.logging.dataflow.LogReceiver
+import com.blazedeveloper.logging.structure.LogTable
 import java.io.File
 
 class LogWriter(val fileName: String) : LogReceiver {

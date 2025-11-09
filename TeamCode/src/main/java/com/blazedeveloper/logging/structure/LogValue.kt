@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.logging.structure
+package com.blazedeveloper.logging.structure
 
 class LogValue(val value: Any, val type: LoggableType) {
     companion object {

@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode.logging.inputs
+package com.blazedeveloper.logging.inputs
 
+import com.blazedeveloper.logging.structure.LogTable
 import com.qualcomm.robotcore.hardware.Gamepad
-import org.firstinspires.ftc.teamcode.logging.structure.LogTable
 
 fun Gamepad.writeToLog(table: LogTable, index: Int) {
     table.put("Gamepads/Joystick$index", toByteArray())

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.logging.structure
+package com.blazedeveloper.logging.structure
 
 enum class LoggableType(val wpilogType: String) {
     String("string"),

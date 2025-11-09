@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto
 
+import com.blazedeveloper.logging.Logger
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import dev.nextftc.core.commands.groups.SequentialGroup
 import dev.nextftc.core.commands.utility.InstantCommand
 import org.firstinspires.ftc.teamcode.AutoMode
-import org.firstinspires.ftc.teamcode.logging.Logger
 import kotlin.time.Duration.Companion.seconds
 
 open class FulAuto(val backAnglePwr : Double, val fwdAnglePwr: Double) : AutoMode() {

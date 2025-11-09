@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems.drive
 
+import com.blazedeveloper.logging.Logger
 import dev.nextftc.bindings.Range
 import dev.nextftc.ftc.Gamepads
-import org.firstinspires.ftc.teamcode.logging.Logger
 import org.firstinspires.ftc.teamcode.subsystems.SubsystemBase
 import kotlin.math.absoluteValue
 import kotlin.math.cos

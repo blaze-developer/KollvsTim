@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.logging.dataflow.ftcdashboard
+package com.blazedeveloper.logging.dataflow.ftcdashboard
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
-import org.firstinspires.ftc.teamcode.logging.dataflow.LogReceiver
-import org.firstinspires.ftc.teamcode.logging.structure.LogTable
+import com.blazedeveloper.logging.dataflow.LogReceiver
+import com.blazedeveloper.logging.structure.LogTable
 
 object FTCDashboard : LogReceiver {
     override fun receive(table: LogTable) {
