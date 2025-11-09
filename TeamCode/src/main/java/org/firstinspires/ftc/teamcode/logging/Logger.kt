@@ -13,9 +13,10 @@ import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.Duration.Companion.nanoseconds
 
 object Logger {
-    private var table: LogTable = LogTable(0)
-
+    private val table: LogTable = LogTable(0)
     private val logReceivers = mutableListOf<LogReceiver>()
+    private val metadata = mutableMapOf<String, String>()
+
     var replaySource: ReplaySource? = null
     val hasReplaySource: Boolean get() = replaySource != null
 
@@ -28,9 +29,13 @@ object Logger {
     /** Adds a receiver to accept log data from the Logger and use for streaming, logfiles, etc. **/
     operator fun plusAssign(receiver: LogReceiver) { logReceivers.add(receiver) }
 
-    private val metadata = mutableMapOf<String, String>()
+    /**
+     * Queues log metadata to be put into the table when
+     * the Logger is started.
+     */
     fun metadata(key: String, value: String) = metadata.put(key, value)
 
+    /** Starts the Logger and its receivers. */
     fun start() {
         val metadataTable = table.subtable(
             if (hasReplaySource) "RealMetadata"
@@ -42,6 +47,7 @@ object Logger {
         logReceivers.forEach { it.start() }
     }
 
+    /** Stops the Logger and its receivers. */
     fun stop() {
         logReceivers.forEach { it.stop() }
     }
@@ -55,7 +61,7 @@ object Logger {
         }
     }
 
-    /** Sets up the packet for this loop. Runs before user code. **/
+    /** Sets up the table for this cycle. Runs before user code. **/
     fun preUser() {
         // Update timestamps and tables from replay
         if (hasReplaySource) {
@@ -72,7 +78,7 @@ object Logger {
         }
     }
 
-    /** Sends packets and logs data. Runs after user code. **/
+    /** Sends data to receivers. Runs after user code. **/
     fun postUser() {
         // Log Gamepad Inputs
         if (!hasReplaySource) {
