@@ -9,24 +9,24 @@ class LogTable @JvmOverloads constructor(
     private val prefix: String = "/",
     private val mutableData: MutableMap<String, LogValue> = mutableMapOf(),
 ) {
-    /** Object to hold a timestamp that can be shared between subtables. **/
+    /** Object to hold a timestamp that can be shared between subtables. */
     class SharedTimestamp(var value: Duration)
 
-    /** The current timestamp of the LogTable stored as a unitless Duration for easy comparisons **/
-    var timestamp: Duration
+    /** The current timestamp of the LogTable stored as a unitless Duration for easy comparisons */
+    var timestamp
         get() = sharedTimestamp.value
         set(value) {
             sharedTimestamp.value = value
         }
 
-    /** The current timestamp of ths LogTable stored in Seconds **/
-    val timestampSeconds: Double get() = timestamp.toDouble(DurationUnit.SECONDS)
+    /** The current timestamp of ths LogTable converted to Seconds */
+    val timestampSeconds get() = timestamp.toDouble(DurationUnit.SECONDS)
 
-    val data: Map<String, LogValue>
-        get() = mutableData.toMap()
+    /** An immutable map of all the keys and LogValues in this table. */
+    val map get() = mutableData.toMap()
 
     /**
-     * Gets a subtable of this LogTable with a specified name.
+     * Gets a subtable with a prefix appended by a specified [name]
      * Changes to this subtable will be reflected in the parent table.
      */
     fun subtable(name: String) = LogTable(
@@ -35,101 +35,160 @@ class LogTable @JvmOverloads constructor(
         mutableData
     )
 
-    /** Put a raw LogValue into the table. **/
+    /** Puts a raw [value] into the table at a specified [key]. */
     fun put(key: String, value: LogValue) = mutableData.put(prefix + key, value)
 
-    /** Put a ByteArray into the table. **/
+    /** Puts a [value] into the table at a specified [key]. */
     fun put(key: String, value: ByteArray) = put(key, value.asLogValue())
 
-    /** Put a Boolean into the table. **/
+    /** Puts a [value] into the table at a specified [key]. */
     fun put(key: String, value: Boolean) = put(key, value.asLogValue())
 
-    /** Put a Int into the table. **/
+    /** Puts a [value] into the table at a specified [key]. */
     fun put(key: String, value: Int) = put(key, value.asLogValue())
 
-    /** Put a Long into the table. **/
+    /** Puts a [value] into the table at a specified [key]. */
     fun put(key: String, value: Long) = put(key, value.asLogValue())
 
-    /** Put a Float into the table. **/
+    /** Puts a [value] into the table at a specified [key]. */
     fun put(key: String, value: Float) = put(key, value.asLogValue())
 
-    /** Put a Double into the table. **/
+    /** Puts a [value] into the table at a specified [key]. */
     fun put(key: String, value: Double) = put(key, value.asLogValue())
 
-    /** Put a String into the table. **/
+    /** Puts a [value] into the table at a specified [key]. */
     fun put(key: String, value: String) = put(key, value.asLogValue())
 
-    /** Put a BooleanArray into the table. **/
+    /** Puts a [value] into the table at a specified [key]. */
     fun put(key: String, value: BooleanArray) = put(key, value.asLogValue())
 
-    /** Put a IntArray into the table. **/
+    /** Puts a [value] into the table at a specified [key]. */
     fun put(key: String, value: IntArray) = put(key, value.asLogValue())
 
-    /** Put a LongArray into the table. **/
+    /** Puts a [value] into the table at a specified [key]. */
     fun put(key: String, value: LongArray) = put(key, value.asLogValue())
 
-    /** Put a FloatArray into the table. **/
+    /** Puts a [value] into the table at a specified [key]. */
     fun put(key: String, value: FloatArray) = put(key, value.asLogValue())
 
-    /** Put a DoubleArray into the table. **/
+    /** Puts a [value] into the table at a specified [key]. */
     fun put(key: String, value: DoubleArray) = put(key, value.asLogValue())
 
-    /** Put a StringArray into the table. **/
+    /** Puts a [value] into the table at a specified [key]. */
     fun put(key: String, value: Array<String>) = put(key, value.asLogValue())
 
-    /** Get a raw LogValue from the table **/
-    fun get(key: String, default: LogValue) =
-        mutableData[prefix + key] ?: default
+    /**
+     * Gets a raw LogValue from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
+    fun get(key: String, default: LogValue): LogValue {
+        val logValue = mutableData[prefix + key] ?: default
+        return if (logValue.type == default.type) logValue else default
+    }
 
-    /** Get a ByteArray from the table **/
+    /**
+     * Gets an item from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
     fun get(key: String, default: ByteArray) =
-        get(key, default.asLogValue()).value as? ByteArray ?: default
+        get(key, default.asLogValue()).value as ByteArray
 
-    /** Get a Boolean from the table **/
+    /**
+     * Gets an item from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
     fun get(key: String, default: Boolean) =
-        get(key, default.asLogValue()).value as? Boolean ?: default
+        get(key, default.asLogValue()).value as Boolean
 
-    /** Get a Int from the table **/
+    /**
+     * Gets an item from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
     fun get(key: String, default: Int) =
-        get(key, default.asLogValue()).value as? Int ?: default
+        get(key, default.asLogValue()).value as Int
 
-    /** Get a Long from the table **/
+    /**
+     * Gets an item from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
     fun get(key: String, default: Long) =
-        get(key, default.asLogValue()).value as? Long ?: default
+        get(key, default.asLogValue()).value as Long
 
-    /** Get a Float from the table **/
+    /**
+     * Gets an item from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
     fun get(key: String, default: Float) =
-        get(key, default.asLogValue()).value as? Float ?: default
+        get(key, default.asLogValue()).value as Float
 
-    /** Get a Double from the table **/
+    /**
+     * Gets an item from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
     fun get(key: String, default: Double) =
-        get(key, default.asLogValue()).value as? Double ?: default
+        get(key, default.asLogValue()).value as Double
 
-    /** Get a String from the table **/
+    /**
+     * Gets an item from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
     fun get(key: String, default: String) =
-        get(key, default.asLogValue()).value as? String ?: default
+        get(key, default.asLogValue()).value as String
 
-    /** Get a BooleanArray from the table **/
+    /**
+     * Gets an item from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
     fun get(key: String, default: BooleanArray) =
-        get(key, default.asLogValue()).value as? BooleanArray ?: default
+        get(key, default.asLogValue()).value as BooleanArray
 
-    /** Get a IntArray from the table **/
+    /**
+     * Gets an item from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
     fun get(key: String, default: IntArray) =
-        get(key, default.asLogValue()).value as? IntArray ?: default
+        get(key, default.asLogValue()).value as IntArray
 
-    /** Get a LongArray from the table **/
+    /**
+     * Gets an item from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
     fun get(key: String, default: LongArray) =
-        get(key, default.asLogValue()).value as? LongArray ?: default
+        get(key, default.asLogValue()).value as LongArray
 
-    /** Get a FloatArray from the table **/
+    /**
+     * Gets an item from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
     fun get(key: String, default: FloatArray) =
-        get(key, default.asLogValue()).value as? FloatArray ?: default
+        get(key, default.asLogValue()).value as FloatArray
 
-    /** Get a DoubleArray from the table **/
+    /**
+     * Gets an item from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
     fun get(key: String, default: DoubleArray) =
-        get(key, default.asLogValue()).value as? DoubleArray ?: default
+        get(key, default.asLogValue()).value as DoubleArray
 
-    /** Get a StringArray from the table **/
+    /**
+     * Gets an item from the table at the specified [key].
+     * If the data does not exist or is of the wrong type,
+     * the [default] is returned.
+     */
+    @Suppress("UNCHECKED_CAST")
     fun get(key: String, default: Array<String>) =
-        get(key, default.asLogValue()).value as? Array<String> ?: default
+        get(key, default.asLogValue()).value as Array<String>
 }

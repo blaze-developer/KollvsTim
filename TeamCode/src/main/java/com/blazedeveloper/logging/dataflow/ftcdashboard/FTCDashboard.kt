@@ -11,7 +11,7 @@ object FTCDashboard : LogReceiver {
 
         packet.put("Timestamp", table.timestamp)
 
-        table.data.forEach { (key, field) ->
+        table.map.forEach { (key, field) ->
             packet.put(key, field.value)
 
 //            when (field.type) {

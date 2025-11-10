@@ -51,7 +51,7 @@ class RLOGEncoder {
         }
 
         // Encode fields
-        for (Map.Entry<String, LogValue> field : lastTable.getData().entrySet()) {
+        for (Map.Entry<String, LogValue> field : lastTable.getMap().entrySet()) {
             buffers.add(encodeValue(keyIDs.get(field.getKey()), field.getValue()));
         }
 
@@ -71,8 +71,8 @@ class RLOGEncoder {
     public void encodeTable(LogTable table, boolean includeRevision) {
         List<ByteBuffer> buffers = new ArrayList<>();
 
-        Map<String, LogValue> newMap = table.getData();
-        Map<String, LogValue> oldMap = lastTable.getData();
+        Map<String, LogValue> newMap = table.getMap();
+        Map<String, LogValue> oldMap = lastTable.getMap();
 
         // Encode log revision
         if (isFirstTable && includeRevision) {
@@ -174,27 +174,27 @@ class RLOGEncoder {
                     valueBuffer = ByteBuffer.allocate(stringBytes.length);
                     valueBuffer.put(stringBytes);
                     break;
-//                case BooleanArray:
-//                    boolean[] booleanArray = value.getBooleanArray();
-//                    valueBuffer = ByteBuffer.allocate(booleanArray.length);
-//                    for (boolean i : booleanArray) {
-//                        valueBuffer.put(i ? (byte) 1 : (byte) 0);
-//                    }
-//                    break;
-//                case IntegerArray:
-//                    long[] intArray = value.getIntegerArray();
-//                    valueBuffer = ByteBuffer.allocate(intArray.length * Long.BYTES);
-//                    for (long i : intArray) {
-//                        valueBuffer.putLong(i);
-//                    }
-//                    break;
-//                case FloatArray:
-//                    float[] floatArray = value.getFloatArray();
-//                    valueBuffer = ByteBuffer.allocate(floatArray.length * Float.BYTES);
-//                    for (float i : floatArray) {
-//                        valueBuffer.putFloat(i);
-//                    }
-//                    break;
+                case BooleanArray:
+                    boolean[] booleanArray = (boolean[]) value.getValue();
+                    valueBuffer = ByteBuffer.allocate(booleanArray.length);
+                    for (boolean i : booleanArray) {
+                        valueBuffer.put(i ? (byte) 1 : (byte) 0);
+                    }
+                    break;
+                case IntegerArray:
+                    long[] intArray = (long[]) value.getValue();
+                    valueBuffer = ByteBuffer.allocate(intArray.length * Long.BYTES);
+                    for (long i : intArray) {
+                        valueBuffer.putLong(i);
+                    }
+                    break;
+                case FloatArray:
+                    float[] floatArray = (float[]) value.getValue();
+                    valueBuffer = ByteBuffer.allocate(floatArray.length * Float.BYTES);
+                    for (float i : floatArray) {
+                        valueBuffer.putFloat(i);
+                    }
+                    break;
                 case DoubleArray:
                     double[] doubleArray = (double[]) value.getValue();
                     valueBuffer = ByteBuffer.allocate(doubleArray.length * Double.BYTES);
@@ -202,20 +202,20 @@ class RLOGEncoder {
                         valueBuffer.putDouble(i);
                     }
                     break;
-//                case StringArray:
-//                    String[] stringArray = value.getStringArray();
-//                    int capacity = Integer.BYTES;
-//                    for (String i : stringArray) {
-//                        capacity += Integer.BYTES + i.getBytes("UTF-8").length;
-//                    }
-//                    valueBuffer = ByteBuffer.allocate(capacity);
-//                    valueBuffer.putInt(stringArray.length);
-//                    for (String i : stringArray) {
-//                        byte[] bytes = i.getBytes("UTF-8");
-//                        valueBuffer.putInt(bytes.length);
-//                        valueBuffer.put(bytes);
-//                    }
-//                    break;
+                case StringArray:
+                    String[] stringArray = (String[]) value.getValue();
+                    int capacity = Integer.BYTES;
+                    for (String i : stringArray) {
+                        capacity += Integer.BYTES + i.getBytes("UTF-8").length;
+                    }
+                    valueBuffer = ByteBuffer.allocate(capacity);
+                    valueBuffer.putInt(stringArray.length);
+                    for (String i : stringArray) {
+                        byte[] bytes = i.getBytes("UTF-8");
+                        valueBuffer.putInt(bytes.length);
+                        valueBuffer.put(bytes);
+                    }
+                    break;
                 default:
                     valueBuffer = ByteBuffer.allocate(0);
             }
