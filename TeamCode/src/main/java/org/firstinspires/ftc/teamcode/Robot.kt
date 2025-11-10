@@ -47,6 +47,8 @@ abstract class RobotOpMode : LoggedNextFTCOpMode() {
 
         if (mode == RobotMode.Replay) Logger.replaySource = TODO("No replay sources implemented.")
 
+        Logger.output("ArrayTest", doubleArrayOf(0.5, 1.0, 1.5))
+
     }
 }
 

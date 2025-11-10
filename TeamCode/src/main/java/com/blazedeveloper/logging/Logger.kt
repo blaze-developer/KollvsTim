@@ -3,7 +3,7 @@ package com.blazedeveloper.logging
 import com.blazedeveloper.logging.dataflow.LogReceiver
 import com.blazedeveloper.logging.dataflow.ReplaySource
 import com.blazedeveloper.logging.inputs.replayFromTable
-import com.blazedeveloper.logging.inputs.writeToLog
+import com.blazedeveloper.logging.inputs.writeToTable
 import com.blazedeveloper.logging.structure.LogTable
 import com.blazedeveloper.logging.structure.LoggableInputs
 import dev.nextftc.ftc.ActiveOpMode
@@ -93,8 +93,8 @@ object Logger {
     fun postUser() {
         // Log Gamepad Inputs
         if (!hasReplaySource) {
-            ActiveOpMode.gamepad1.writeToLog(table, 1)
-            ActiveOpMode.gamepad2.writeToLog(table, 2)
+            ActiveOpMode.gamepad1.writeToTable(table, 1)
+            ActiveOpMode.gamepad2.writeToTable(table, 2)
         }
 
         logReceivers.forEach { it.receive(table) }
