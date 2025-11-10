@@ -17,10 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kotlin.time.DurationJvmKt;
-import kotlin.time.DurationKt;
-import kotlin.time.DurationUnit;
-
 /**
  * Converts log tables to the RLOG format. Based on RLOG R2 with support for custom type strings.
  */

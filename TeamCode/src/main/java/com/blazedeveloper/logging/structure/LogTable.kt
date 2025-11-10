@@ -2,7 +2,6 @@ package com.blazedeveloper.logging.structure
 
 import com.blazedeveloper.logging.structure.LogValue.Companion.asLogValue
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.DurationUnit
 
 class LogTable @JvmOverloads constructor(
@@ -37,8 +36,8 @@ class LogTable @JvmOverloads constructor(
     /** Put a raw LogValue into the table. **/
     fun put(key: String, value: LogValue) = mutableData.put(prefix + key, value)
 
-    /** Put a String into the table. **/
-    fun put(key: String, value: String) = put(key, value.asLogValue())
+    /** Put a ByteArray into the table. **/
+    fun put(key: String, value: ByteArray) = put(key, value.asLogValue())
 
     /** Put a Boolean into the table. **/
     fun put(key: String, value: Boolean) = put(key, value.asLogValue())
@@ -55,17 +54,32 @@ class LogTable @JvmOverloads constructor(
     /** Put a Double into the table. **/
     fun put(key: String, value: Double) = put(key, value.asLogValue())
 
-    /** Put a ByteArray into the table. **/
-    fun put(key: String, value: ByteArray) = put(key, value.asLogValue())
+    /** Put a String into the table. **/
+    fun put(key: String, value: String) = put(key, value.asLogValue())
+
+    /** Put a BooleanArray into the table. **/
+    fun put(key: String, value: BooleanArray) = put(key, value.asLogValue())
+
+    /** Put a IntArray into the table. **/
+    fun put(key: String, value: IntArray) = put(key, value.asLogValue())
+
+    /** Put a LongArray into the table. **/
+    fun put(key: String, value: LongArray) = put(key, value.asLogValue())
+
+    /** Put a FloatArray into the table. **/
+    fun put(key: String, value: FloatArray) = put(key, value.asLogValue())
 
     /** Put a DoubleArray into the table. **/
     fun put(key: String, value: DoubleArray) = put(key, value.asLogValue())
 
+    /** Put a StringArray into the table. **/
+//    fun put(key: String, value: Array<String>) = put(key, value.asLogValue())
+
     /** Get a raw LogValue from the table **/
     fun get(key: String, default: LogValue) = mutableData[prefix + key] ?: default
 
-    /** Get a String from the table **/
-    fun get(key: String, default: String) = get(key, default.asLogValue()).value as? String ?: default
+    /** Get a ByteArray from the table **/
+    fun get(key: String, default: ByteArray) = get(key, default.asLogValue()).value as? ByteArray ?: default
 
     /** Get a Boolean from the table **/
     fun get(key: String, default: Boolean) = get(key, default.asLogValue()).value as? Boolean ?: default
@@ -82,9 +96,26 @@ class LogTable @JvmOverloads constructor(
     /** Get a Double from the table **/
     fun get(key: String, default: Double) = get(key, default.asLogValue()).value as? Double ?: default
 
-    /** Get a ByteArray from the table **/
-    fun get(key: String, default: ByteArray) = get(key, default.asLogValue()).value as? ByteArray ?: default
+    /** Get a String from the table **/
+    fun get(key: String, default: String) = get(key, default.asLogValue()).value as? String ?: default
+
+    /** Get a BooleanArray from the table **/
+    fun get(key: String, default: BooleanArray) = get(key, default.asLogValue()).value as? BooleanArray ?: default
+
+    /** Get a IntArray from the table **/
+    fun get(key: String, default: IntArray) = get(key, default.asLogValue()).value as? IntArray ?: default
+
+    /** Get a LongArray from the table **/
+    fun get(key: String, default: LongArray) = get(key, default.asLogValue()).value as? LongArray ?: default
+
+    /** Get a FloatArray from the table **/
+    fun get(key: String, default: FloatArray) = get(key, default.asLogValue()).value as? FloatArray ?: default
 
     /** Get a DoubleArray from the table **/
     fun get(key: String, default: DoubleArray) = get(key, default.asLogValue()).value as? DoubleArray ?: default
+
+    /** Get a StringArray from the table **/
+//    fun get(key: String, default: Array<String>) = get(key, default.asLogValue()).let {
+//        if (it.type == LoggableType.StringArray) it.value as? Array<String> ?: default
+//    }
 }
