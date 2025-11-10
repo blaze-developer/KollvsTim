@@ -43,7 +43,7 @@ class RLOGEncoder {
         buffers.add(ByteBuffer.allocate(1).put(logRevision));
 
         // Encode timestamp
-        buffers.add(encodeTimestamp(lastTable.getTimestampSeconds()));
+        buffers.add(encodeTimestamp(lastTable.getTimestamp() / 1_000_000_000.0));
 
         // Encode key IDs
         for (Map.Entry<String, Short> keyID : keyIDs.entrySet()) {
@@ -81,7 +81,7 @@ class RLOGEncoder {
         }
 
         // Encode timestamp
-        buffers.add(encodeTimestamp(table.getTimestampSeconds()));
+        buffers.add(encodeTimestamp(table.getTimestamp() / 1_000_000_000.0));
 
         // Encode new/changed fields
         for (Map.Entry<String, LogValue> field : newMap.entrySet()) {

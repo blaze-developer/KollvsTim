@@ -2,7 +2,6 @@ package com.blazedeveloper.logging.structure
 
 import com.blazedeveloper.logging.structure.LogValue.Companion.asLogValue
 import kotlin.time.Duration
-import kotlin.time.DurationUnit
 
 class LogTable @JvmOverloads constructor(
     private val sharedTimestamp: SharedTimestamp = SharedTimestamp(Duration.ZERO),
@@ -13,17 +12,14 @@ class LogTable @JvmOverloads constructor(
     class SharedTimestamp(var value: Duration)
 
     /** The current timestamp of the LogTable stored as a unitless Duration for easy comparisons */
-    var timestamp
-        get() = sharedTimestamp.value
-        set(value) {
+    var timestamp: Duration
+        @JvmName("getTimestamp") get() = sharedTimestamp.value
+        @JvmName("setTimestamp") set(value) {
             sharedTimestamp.value = value
         }
 
-    /** The current timestamp of ths LogTable converted to Seconds */
-    val timestampSeconds get() = timestamp.toDouble(DurationUnit.SECONDS)
-
     /** An immutable map of all the keys and LogValues in this table. */
-    val map get() = mutableData.toMap()
+    val map: Map<String, LogValue> get() = mutableData.toMap()
 
     /**
      * Gets a subtable with a prefix appended by a specified [name]
