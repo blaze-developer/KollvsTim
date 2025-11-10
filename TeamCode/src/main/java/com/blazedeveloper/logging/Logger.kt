@@ -9,7 +9,7 @@ import com.blazedeveloper.logging.structure.LoggableInputs
 import dev.nextftc.ftc.ActiveOpMode
 import kotlin.system.exitProcess
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.TimeSource.Monotonic
 
 object Logger {
     private val table: LogTable = LogTable()
@@ -19,6 +19,8 @@ object Logger {
     private val outputTable: LogTable by lazy {
         table.subtable(if (!hasReplaySource) "RealOutputs" else "ReplayOutputs")
     }
+
+    private val loggerStart by lazy { Monotonic.markNow() }
 
     var replaySource: ReplaySource? = null
     val hasReplaySource: Boolean get() = replaySource != null
@@ -46,7 +48,7 @@ object Logger {
      */
     val metadata = Addable<Pair<String, String>> { metadataPairs += it }
 
-    /** Starts the Logger and its receivers. */
+    /** Starts the Logger, its receivers, and sources. */
     fun start() {
         val metadataTable = table.subtable(
             if (!hasReplaySource) "RealMetadata"
@@ -56,20 +58,15 @@ object Logger {
         metadataPairs.forEach { (key, value) -> metadataTable.put(key, value) }
 
         logReceivers.forEach { it.start() }
+
+        replaySource?.start()
     }
 
-    /** Stops the Logger and its receivers. */
+    /** Stops the Logger, its receivers, and sources.*/
     fun stop() {
         logReceivers.forEach { it.stop() }
-    }
 
-    /** Processes an input for this loop, either logging or replaying from the table. **/
-    fun processInputs(subtableName: String, inputs: LoggableInputs) {
-        if(hasReplaySource) {
-            inputs.fromLog(table.subtable(subtableName))
-        } else {
-            inputs.toLog(table.subtable(subtableName))
-        }
+        replaySource?.stop()
     }
 
     /** Sets up the table for this cycle. Runs before user code. **/
@@ -85,7 +82,16 @@ object Logger {
             ActiveOpMode.gamepad1.replayFromTable(table, 1)
             ActiveOpMode.gamepad2.replayFromTable(table, 2)
         } else {
-            table.timestamp = System.nanoTime().nanoseconds
+            table.timestamp = loggerStart.elapsedNow()
+        }
+    }
+
+    /** Processes an input for this loop, either logging or replaying from the table. **/
+    fun processInputs(subtableName: String, inputs: LoggableInputs) {
+        if(hasReplaySource) {
+            inputs.fromLog(table.subtable(subtableName))
+        } else {
+            inputs.toLog(table.subtable(subtableName))
         }
     }
 
