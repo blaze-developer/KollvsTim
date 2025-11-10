@@ -160,7 +160,7 @@ class RLOGEncoder {
                     valueBuffer = ByteBuffer.allocate(1).put((boolean) value.getValue() ? (byte) 1 : (byte) 0);
                     break;
                 case Integer:
-                    valueBuffer = ByteBuffer.allocate(Long.BYTES).putLong((int) value.getValue());
+                    valueBuffer = ByteBuffer.allocate(Long.BYTES).putLong((long) value.getValue());
                     break;
                 case Float:
                     valueBuffer = ByteBuffer.allocate(Float.BYTES).putFloat((float) value.getValue());

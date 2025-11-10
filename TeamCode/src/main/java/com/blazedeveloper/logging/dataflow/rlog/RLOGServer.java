@@ -44,7 +44,7 @@ public class RLOGServer implements LogReceiver {
     public void start() {
         thread = new ServerThread(port);
         thread.start();
-        System.out.println("[AdvantageKit] RLOG server started on port " + Integer.toString(port));
+        System.out.println("[AdvantageKit] RLOG server started on port " + port);
     }
 
     public void stop() {
@@ -158,12 +158,12 @@ public class RLOGServer implements LogReceiver {
                             }
 
                             // Close connection if socket timed out
-                            if (System.nanoTime() / 1000.0 - lastHeartbeats.get(i)
-                                    > 3000000) {
-                                socket.close();
-                                printDisconnectMessage(socket, "timeout");
-                                continue;
-                            }
+//                            if (System.nanoTime() / 1000.0 - lastHeartbeats.get(i)
+//                                    > 3000000) {
+//                                socket.close();
+//                                printDisconnectMessage(socket, "timeout");
+//                                continue;
+//                            }
 
                             // Send message to stay alive
                             java.io.OutputStream outputStream = socket.getOutputStream();

@@ -18,6 +18,8 @@ class Drive(private val io: DriveIO) : SubsystemBase() {
     override fun periodic() {
         io.updateInputs(inputs)
         Logger.processInputs("Drive", inputs)
+
+        Logger.output("Timestamp", Logger.timestamp.inWholeMicroseconds)
     }
 
     fun runFieldPowersCmd(fieldX: Double, fieldY: Double, fieldTheta: Double) = runOnce {
