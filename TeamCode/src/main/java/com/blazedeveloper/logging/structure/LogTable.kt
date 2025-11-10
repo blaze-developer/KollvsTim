@@ -5,19 +5,13 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.DurationUnit
 
-class LogTable(
-    private val sharedTimestamp: SharedTimestamp,
+class LogTable @JvmOverloads constructor(
+    private val sharedTimestamp: SharedTimestamp = SharedTimestamp(Duration.ZERO),
     private val prefix: String = "/",
     private val mutableData: MutableMap<String, LogValue> = mutableMapOf(),
 ) {
     /** Object to hold a timestamp that can be shared between subtables. **/
     class SharedTimestamp(var value: Duration)
-
-    /** Creates a LogTable based on a timestamp as the root table. **/
-    constructor(timestamp: Duration) : this(SharedTimestamp(timestamp))
-
-    /** Creates a LogTable based on a timestamp in microseconds as the root table. **/
-    constructor(timestamp: Long) : this(timestamp.microseconds)
 
     /** The current timestamp of the LogTable stored as a unitless Duration for easy comparisons **/
     var timestamp: Duration

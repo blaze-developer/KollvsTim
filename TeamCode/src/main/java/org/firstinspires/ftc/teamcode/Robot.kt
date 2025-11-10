@@ -1,3 +1,5 @@
+@file:Suppress("KotlinConstantConditions")
+
 package org.firstinspires.ftc.teamcode
 
 import com.blazedeveloper.logging.LoggedNextFTCOpMode
@@ -29,12 +31,21 @@ abstract class RobotOpMode : LoggedNextFTCOpMode() {
             BindingsComponent
         )
 
-        Logger.metadata += "RunType" to mode.name
-
-        if (mode == RobotMode.Replay) Logger.replaySource = TODO("No replay sources implemented.")
+        Logger.metadata += "Project" to MAVEN_GROUP
+        Logger.metadata += "GitHash" to GIT_SHA
+        Logger.metadata += "GitBranch" to GIT_BRANCH
+        Logger.metadata += "GitDate" to GIT_DATE
+        Logger.metadata += "BuildDate" to BUILD_DATE
+        Logger.metadata += "GitStatus" to when(DIRTY) {
+            0 -> "All Changes Commited"
+            1 -> "Uncommited Changes"
+            else -> "Unknown"
+        }
 
         Logger.receivers += FTCDashboard
         Logger.receivers += RLOGServer()
+
+        if (mode == RobotMode.Replay) Logger.replaySource = TODO("No replay sources implemented.")
 
     }
 }

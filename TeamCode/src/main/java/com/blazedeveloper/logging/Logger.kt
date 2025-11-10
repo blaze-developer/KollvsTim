@@ -12,9 +12,9 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.nanoseconds
 
 object Logger {
-    private val table: LogTable = LogTable(0)
+    private val table: LogTable = LogTable()
     private val logReceivers = mutableListOf<LogReceiver>()
-    private val metadataMap = mutableMapOf<String, String>()
+    private val metadataPairs = mutableListOf<Pair<String, String>>()
 
     var replaySource: ReplaySource? = null
     val hasReplaySource: Boolean get() = replaySource != null
@@ -34,13 +34,13 @@ object Logger {
      * Object that user can add log receivers to that accept log
      * data from the Logger and use for streaming, logfiles, etc.
      */
-    val receivers = Addable<LogReceiver> { logReceivers.add(it) }
+    val receivers = Addable<LogReceiver> { logReceivers += it }
 
     /**
      * Queues log metadata to be put into the table when
      * the Logger is started.
      */
-    val metadata = Addable<Pair<String, String>> { metadataMap.put(it.first, it.second) }
+    val metadata = Addable<Pair<String, String>> { metadataPairs += it }
 
     /** Starts the Logger and its receivers. */
     fun start() {
@@ -49,7 +49,7 @@ object Logger {
             else "ReplayMetadata"
         )
 
-        metadataMap.forEach { (key, value) -> metadataTable.put(key, value) }
+        metadataPairs.forEach { (key, value) -> metadataTable.put(key, value) }
 
         logReceivers.forEach { it.start() }
     }
