@@ -17,6 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import kotlin.time.DurationJvmKt;
+import kotlin.time.DurationKt;
+import kotlin.time.DurationUnit;
+
 /**
  * Converts log tables to the RLOG format. Based on RLOG R2 with support for custom type strings.
  */
@@ -25,7 +29,7 @@ class RLOGEncoder {
 
     private ByteBuffer nextOutput;
     private boolean isFirstTable = true;
-    private LogTable lastTable = new LogTable(0);
+    private LogTable lastTable = new LogTable();
     private Map<String, Short> keyIDs = new HashMap<>();
     private Map<String, String> keyTypes = new HashMap<>();
     private short nextKeyID = 0;
