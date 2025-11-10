@@ -15,7 +15,9 @@ class LogTable @JvmOverloads constructor(
     /** The current timestamp of the LogTable stored as a unitless Duration for easy comparisons **/
     var timestamp: Duration
         get() = sharedTimestamp.value
-        set(value) { sharedTimestamp.value = value }
+        set(value) {
+            sharedTimestamp.value = value
+        }
 
     /** The current timestamp of ths LogTable stored in Seconds **/
     val timestampSeconds: Double get() = timestamp.toDouble(DurationUnit.SECONDS)
@@ -28,9 +30,9 @@ class LogTable @JvmOverloads constructor(
      * Changes to this subtable will be reflected in the parent table.
      */
     fun subtable(name: String) = LogTable(
-        this.sharedTimestamp,
-        this.prefix + name + "/",
-        this.mutableData
+        sharedTimestamp,
+        "$prefix$name/",
+        mutableData
     )
 
     /** Put a raw LogValue into the table. **/
@@ -73,49 +75,61 @@ class LogTable @JvmOverloads constructor(
     fun put(key: String, value: DoubleArray) = put(key, value.asLogValue())
 
     /** Put a StringArray into the table. **/
-//    fun put(key: String, value: Array<String>) = put(key, value.asLogValue())
+    fun put(key: String, value: Array<String>) = put(key, value.asLogValue())
 
     /** Get a raw LogValue from the table **/
-    fun get(key: String, default: LogValue) = mutableData[prefix + key] ?: default
+    fun get(key: String, default: LogValue) =
+        mutableData[prefix + key] ?: default
 
     /** Get a ByteArray from the table **/
-    fun get(key: String, default: ByteArray) = get(key, default.asLogValue()).value as? ByteArray ?: default
+    fun get(key: String, default: ByteArray) =
+        get(key, default.asLogValue()).value as? ByteArray ?: default
 
     /** Get a Boolean from the table **/
-    fun get(key: String, default: Boolean) = get(key, default.asLogValue()).value as? Boolean ?: default
+    fun get(key: String, default: Boolean) =
+        get(key, default.asLogValue()).value as? Boolean ?: default
 
     /** Get a Int from the table **/
-    fun get(key: String, default: Int) = get(key, default.asLogValue()).value as? Int ?: default
+    fun get(key: String, default: Int) =
+        get(key, default.asLogValue()).value as? Int ?: default
 
     /** Get a Long from the table **/
-    fun get(key: String, default: Long) = get(key, default.asLogValue()).value as? Long ?: default
+    fun get(key: String, default: Long) =
+        get(key, default.asLogValue()).value as? Long ?: default
 
     /** Get a Float from the table **/
-    fun get(key: String, default: Float) = get(key, default.asLogValue()).value as? Float ?: default
+    fun get(key: String, default: Float) =
+        get(key, default.asLogValue()).value as? Float ?: default
 
     /** Get a Double from the table **/
-    fun get(key: String, default: Double) = get(key, default.asLogValue()).value as? Double ?: default
+    fun get(key: String, default: Double) =
+        get(key, default.asLogValue()).value as? Double ?: default
 
     /** Get a String from the table **/
-    fun get(key: String, default: String) = get(key, default.asLogValue()).value as? String ?: default
+    fun get(key: String, default: String) =
+        get(key, default.asLogValue()).value as? String ?: default
 
     /** Get a BooleanArray from the table **/
-    fun get(key: String, default: BooleanArray) = get(key, default.asLogValue()).value as? BooleanArray ?: default
+    fun get(key: String, default: BooleanArray) =
+        get(key, default.asLogValue()).value as? BooleanArray ?: default
 
     /** Get a IntArray from the table **/
-    fun get(key: String, default: IntArray) = get(key, default.asLogValue()).value as? IntArray ?: default
+    fun get(key: String, default: IntArray) =
+        get(key, default.asLogValue()).value as? IntArray ?: default
 
     /** Get a LongArray from the table **/
-    fun get(key: String, default: LongArray) = get(key, default.asLogValue()).value as? LongArray ?: default
+    fun get(key: String, default: LongArray) =
+        get(key, default.asLogValue()).value as? LongArray ?: default
 
     /** Get a FloatArray from the table **/
-    fun get(key: String, default: FloatArray) = get(key, default.asLogValue()).value as? FloatArray ?: default
+    fun get(key: String, default: FloatArray) =
+        get(key, default.asLogValue()).value as? FloatArray ?: default
 
     /** Get a DoubleArray from the table **/
-    fun get(key: String, default: DoubleArray) = get(key, default.asLogValue()).value as? DoubleArray ?: default
+    fun get(key: String, default: DoubleArray) =
+        get(key, default.asLogValue()).value as? DoubleArray ?: default
 
     /** Get a StringArray from the table **/
-//    fun get(key: String, default: Array<String>) = get(key, default.asLogValue()).let {
-//        if (it.type == LoggableType.StringArray) it.value as? Array<String> ?: default
-//    }
+    fun get(key: String, default: Array<String>) =
+        get(key, default.asLogValue()).value as? Array<String> ?: default
 }
