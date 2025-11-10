@@ -103,7 +103,8 @@ object Logger {
             ActiveOpMode.gamepad2.writeToTable(table, 2)
         }
 
-        logReceivers.forEach { it.receive(table) }
+        val tableToReceive = table.clone()
+        logReceivers.forEach { it.receive(tableToReceive) }
     }
 
     fun output(key: String, value: String) = outputTable.put(key, value)

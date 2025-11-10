@@ -1,6 +1,6 @@
 package com.blazedeveloper.logging.structure
 
-class LogValue(val value: Any, val type: LoggableType) {
+data class LogValue(val value: Any, val type: LoggableType) {
     companion object {
         fun ByteArray.asLogValue() = LogValue(this, LoggableType.ByteArray)
         fun Boolean.asLogValue() = LogValue(this, LoggableType.Boolean)

@@ -31,6 +31,16 @@ class LogTable @JvmOverloads constructor(
         mutableData
     )
 
+    /**
+     * Creates a copy of this table exactly as it is.
+     * Changes to this table will NOT be reflected in the original.
+     */
+    fun clone() = LogTable(
+        SharedTimestamp(sharedTimestamp.value),
+        prefix,
+        mutableData.mapValues { (key, value) -> value.copy() }.toMutableMap()
+    )
+
     /** Puts a raw [value] into the table at a specified [key]. */
     fun put(key: String, value: LogValue) = mutableData.put(prefix + key, value)
 
