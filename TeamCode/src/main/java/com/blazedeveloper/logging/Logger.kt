@@ -16,6 +16,10 @@ object Logger {
     private val logReceivers = mutableListOf<LogReceiver>()
     private val metadataPairs = mutableListOf<Pair<String, String>>()
 
+    private val outputTable: LogTable by lazy {
+        table.subtable(if (!hasReplaySource) "RealOutputs" else "ReplayOutputs")
+    }
+
     var replaySource: ReplaySource? = null
     val hasReplaySource: Boolean get() = replaySource != null
 
@@ -45,7 +49,7 @@ object Logger {
     /** Starts the Logger and its receivers. */
     fun start() {
         val metadataTable = table.subtable(
-            if (hasReplaySource) "RealMetadata"
+            if (!hasReplaySource) "RealMetadata"
             else "ReplayMetadata"
         )
 
@@ -96,10 +100,12 @@ object Logger {
         logReceivers.forEach { it.receive(table) }
     }
 
-    fun log(key: String, value: String) = table.put(key, value)
-    fun log(key: String, value: Boolean) = table.put(key, value)
-    fun log(key: String, value: Int) = table.put(key, value)
-    fun log(key: String, value: Long) = table.put(key, value)
-    fun log(key: String, value: Float) = table.put(key, value)
-    fun log(key: String, value: Double) = table.put(key, value)
+    fun output(key: String, value: String) = outputTable.put(key, value)
+    fun output(key: String, value: Boolean) = outputTable.put(key, value)
+    fun output(key: String, value: Int) = outputTable.put(key, value)
+    fun output(key: String, value: Long) = outputTable.put(key, value)
+    fun output(key: String, value: Float) = outputTable.put(key, value)
+    fun output(key: String, value: Double) = outputTable.put(key, value)
+    fun output(key: String, value: ByteArray) = outputTable.put(key, value)
+    fun output(key: String, value: DoubleArray) = outputTable.put(key, value)
 }
