@@ -8,7 +8,6 @@ import com.blazedeveloper.logging.structure.LogTable
 import com.blazedeveloper.logging.structure.LoggableInputs
 import dev.nextftc.ftc.ActiveOpMode
 import kotlin.system.exitProcess
-import kotlin.system.measureNanoTime
 import kotlin.time.Duration
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource.Monotonic
@@ -25,6 +24,8 @@ object Logger {
     private val outputTable: LogTable by lazy {
         table.subtable(if (!hasReplaySource) "RealOutputs" else "ReplayOutputs")
     }
+
+    private val timings = table.subtable("LoggerTimings")
 
     private val loggerStart by lazy { Monotonic.markNow() }
     private lateinit var cycleStart: TimeMark
@@ -87,14 +88,14 @@ object Logger {
                     exitProcess(0)
                 }
             }
-            output("Logger/TableReadMS", tableReadTime.inWholeMilliseconds)
+            timings.put("TableReadMS", tableReadTime.inWholeMilliseconds)
 
             // Replay Gamepads
             val gamepadLogTime = measureTime {
                 ActiveOpMode.gamepad1.replayFromTable(table, 1)
                 ActiveOpMode.gamepad2.replayFromTable(table, 2)
             }
-            output("Logger/GamepadLogMS", gamepadLogTime.inWholeMilliseconds)
+            timings.put("GamepadReplayMS", gamepadLogTime.inWholeMilliseconds)
         } else {
             table.timestamp = loggerStart.elapsedNow()
         }
@@ -114,7 +115,7 @@ object Logger {
     /** Sends data to receivers. Runs after user code. **/
     fun postUser() {
         val userCodeTime = timeBeforeUser.elapsedNow()
-        output("UserCodeMS", userCodeTime.inWholeMilliseconds)
+        timings.put("UserCodeMS", userCodeTime.inWholeMilliseconds)
 
         // Log Gamepad Inputs
         if (!hasReplaySource) {
@@ -122,14 +123,14 @@ object Logger {
                 ActiveOpMode.gamepad1.writeToTable(table, 1)
                 ActiveOpMode.gamepad2.writeToTable(table, 2)
             }
-            output("Logger/GamepadReplayMS", gamepadReplayTime.inWholeMilliseconds)
+            timings.put("GamepadLogMS", gamepadReplayTime.inWholeMilliseconds)
         }
 
         // Record Timings
         val fullCycleTime = cycleStart.elapsedNow()
         val loggerCycleTime = fullCycleTime - userCodeTime
-        output("FullCycleMS", fullCycleTime.inWholeMilliseconds)
-        output("LoggerCycleMS", loggerCycleTime.inWholeMilliseconds)
+        timings.put("FullCycleMS", fullCycleTime.inWholeMilliseconds)
+        timings.put("LoggerCycleMS", loggerCycleTime.inWholeMilliseconds)
 
         val tableToReceive = table.clone()
         logReceivers.forEach { it.receive(tableToReceive) }
