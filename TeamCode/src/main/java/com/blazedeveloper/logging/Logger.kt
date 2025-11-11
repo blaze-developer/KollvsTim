@@ -8,26 +8,32 @@ import com.blazedeveloper.logging.structure.LogTable
 import com.blazedeveloper.logging.structure.LoggableInputs
 import dev.nextftc.ftc.ActiveOpMode
 import kotlin.system.exitProcess
+import kotlin.system.measureNanoTime
 import kotlin.time.Duration
+import kotlin.time.TimeMark
 import kotlin.time.TimeSource.Monotonic
+import kotlin.time.measureTime
 
 object Logger {
     private val table: LogTable = LogTable()
     private val logReceivers = mutableListOf<LogReceiver>()
     private val metadataPairs = mutableListOf<Pair<String, String>>()
 
+    var replaySource: ReplaySource? = null
+    val hasReplaySource: Boolean get() = replaySource != null
+
     private val outputTable: LogTable by lazy {
         table.subtable(if (!hasReplaySource) "RealOutputs" else "ReplayOutputs")
     }
 
     private val loggerStart by lazy { Monotonic.markNow() }
-
-    var replaySource: ReplaySource? = null
-    val hasReplaySource: Boolean get() = replaySource != null
+    private lateinit var cycleStart: TimeMark
+    private lateinit var timeBeforeUser: TimeMark
 
     fun interface Addable<T> {
         fun add(toAdd: T)
         operator fun plusAssign(toAdd: T) = add(toAdd)
+        operator fun String.invoke(value: String) = Pair(this, value)
     }
 
     /**
@@ -43,7 +49,7 @@ object Logger {
     val receivers = Addable<LogReceiver> { logReceivers += it }
 
     /**
-     * Queues log metadata to be put into the table when
+     * Maps log metadata names to values to be put into the table when
      * the Logger is started.
      */
     val metadata = Addable<Pair<String, String>> { metadataPairs += it }
@@ -71,19 +77,29 @@ object Logger {
 
     /** Sets up the table for this cycle. Runs before user code. **/
     fun preUser() {
-        // Update timestamps and tables from replay
+        cycleStart = Monotonic.markNow()
+
         if (hasReplaySource) {
-            val updated = replaySource?.updateTable(table) ?: false
-            if (!updated) {
-                exitProcess(1)
+            // Update table from the replay source, end if the source ends.
+            val tableReadTime = measureTime {
+                val updated = replaySource?.updateTable(table) ?: false
+                if (!updated) {
+                    exitProcess(0)
+                }
             }
+            output("Logger/TableReadMS", tableReadTime.inWholeMilliseconds)
 
             // Replay Gamepads
-            ActiveOpMode.gamepad1.replayFromTable(table, 1)
-            ActiveOpMode.gamepad2.replayFromTable(table, 2)
+            val gamepadLogTime = measureTime {
+                ActiveOpMode.gamepad1.replayFromTable(table, 1)
+                ActiveOpMode.gamepad2.replayFromTable(table, 2)
+            }
+            output("Logger/GamepadLogMS", gamepadLogTime.inWholeMilliseconds)
         } else {
             table.timestamp = loggerStart.elapsedNow()
         }
+
+        timeBeforeUser = Monotonic.markNow()
     }
 
     /** Processes an input for this loop, either logging or replaying from the table. **/
@@ -97,11 +113,23 @@ object Logger {
 
     /** Sends data to receivers. Runs after user code. **/
     fun postUser() {
+        val userCodeTime = timeBeforeUser.elapsedNow()
+        output("UserCodeMS", userCodeTime.inWholeMilliseconds)
+
         // Log Gamepad Inputs
         if (!hasReplaySource) {
-            ActiveOpMode.gamepad1.writeToTable(table, 1)
-            ActiveOpMode.gamepad2.writeToTable(table, 2)
+            val gamepadReplayTime = measureTime {
+                ActiveOpMode.gamepad1.writeToTable(table, 1)
+                ActiveOpMode.gamepad2.writeToTable(table, 2)
+            }
+            output("Logger/GamepadReplayMS", gamepadReplayTime.inWholeMilliseconds)
         }
+
+        // Record Timings
+        val fullCycleTime = cycleStart.elapsedNow()
+        val loggerCycleTime = fullCycleTime - userCodeTime
+        output("FullCycleMS", fullCycleTime.inWholeMilliseconds)
+        output("LoggerCycleMS", loggerCycleTime.inWholeMilliseconds)
 
         val tableToReceive = table.clone()
         logReceivers.forEach { it.receive(tableToReceive) }
