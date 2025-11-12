@@ -6,6 +6,7 @@ import com.blazedeveloper.logging.LoggedNextFTCOpMode
 import com.blazedeveloper.logging.Logger
 import com.blazedeveloper.logging.dataflow.ftcdashboard.FTCDashboard
 import com.blazedeveloper.logging.dataflow.rlog.RLOGServer
+import com.blazedeveloper.logging.dataflow.rlog.RLOGWriter
 import dev.nextftc.core.commands.Command
 import dev.nextftc.core.components.BindingsComponent
 import dev.nextftc.ftc.components.BulkReadComponent
@@ -42,8 +43,8 @@ abstract class RobotOpMode : LoggedNextFTCOpMode() {
             else -> "Unknown"
         }
 
-        Logger.receivers += FTCDashboard
         Logger.receivers += RLOGServer()
+        Logger.receivers += RLOGWriter("logwritertest.rlog")
 
         if (mode == RobotMode.Replay) Logger.replaySource = TODO("No replay sources implemented.")
 
