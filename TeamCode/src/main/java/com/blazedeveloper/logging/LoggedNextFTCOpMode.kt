@@ -54,8 +54,8 @@ abstract class LoggedNextFTCOpMode : LinearOpMode() {
             // Wait for start
             while (inputs.inInit) {
                 Logger.preUser()
-                components.forEach { it.preWaitForStart() }
                 inputs.process()
+                components.forEach { it.preWaitForStart() }
                 onWaitForStart()
                 components.reversed().forEach { it.postWaitForStart() }
                 Logger.postUser()
@@ -70,8 +70,8 @@ abstract class LoggedNextFTCOpMode : LinearOpMode() {
 
                 while (inputs.isActive) {
                     Logger.preUser()
-                    components.forEach { it.preUpdate() }
                     inputs.process()
+                    components.forEach { it.preUpdate() }
                     CommandManager.run()
                     onUpdate()
                     components.reversed().forEach { it.postUpdate() }

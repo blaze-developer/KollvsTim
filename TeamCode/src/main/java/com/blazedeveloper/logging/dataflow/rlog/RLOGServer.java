@@ -118,7 +118,7 @@ public class RLOGServer implements LogReceiver {
                     socket.getOutputStream().write(data);
                     synchronized (socketsLock) {
                         sockets.add(socket);
-                        lastHeartbeats.add(System.nanoTime() / 1000.0);
+                        lastHeartbeats.add(System.nanoTime() / 1_000_000_000.0);
                     }
                     System.out.println(
                             "[AdvantageKit] Connected to RLOG client - "
@@ -154,16 +154,16 @@ public class RLOGServer implements LogReceiver {
                             InputStream inputStream = socket.getInputStream();
                             if (inputStream.available() > 0) {
                                 inputStream.skip(inputStream.available());
-                                lastHeartbeats.set(i, System.nanoTime() / 1000.0);
+                                lastHeartbeats.set(i, System.nanoTime() / 1_000_000_000.0);
                             }
 
                             // Close connection if socket timed out
-//                            if (System.nanoTime() / 1000.0 - lastHeartbeats.get(i)
-//                                    > 3000000) {
-//                                socket.close();
-//                                printDisconnectMessage(socket, "timeout");
-//                                continue;
-//                            }
+                            if (System.nanoTime() / 1_000_000_000.0 - lastHeartbeats.get(i)
+                                    > heartbeatTimeoutSecs) {
+                                socket.close();
+                                printDisconnectMessage(socket, "timeout");
+                                continue;
+                            }
 
                             // Send message to stay alive
                             java.io.OutputStream outputStream = socket.getOutputStream();
