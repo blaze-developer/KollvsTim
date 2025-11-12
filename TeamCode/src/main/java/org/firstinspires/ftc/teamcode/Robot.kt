@@ -11,6 +11,9 @@ import dev.nextftc.core.commands.Command
 import dev.nextftc.core.components.BindingsComponent
 import dev.nextftc.ftc.components.BulkReadComponent
 import org.firstinspires.ftc.teamcode.component.SubsystemRegistry
+import org.firstinspires.ftc.teamcode.subsystems.dore.Dore
+import org.firstinspires.ftc.teamcode.subsystems.dore.DoreIO
+import org.firstinspires.ftc.teamcode.subsystems.dore.DoreIOHardware
 import org.firstinspires.ftc.teamcode.subsystems.drive.Drive
 import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIO
 import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIOHardware
@@ -20,10 +23,15 @@ abstract class RobotOpMode : LoggedNextFTCOpMode() {
 
     private val mode = RobotMode.Phone
 
-    protected val drive = Drive(when(mode) {
-        RobotMode.Real -> DriveIOHardware("fl", "fr", "bl", "br")
-        else -> object : DriveIO {}
-    })
+    protected val drive = Drive(
+        if (mode == RobotMode.Real) DriveIOHardware("fl", "fr", "bl", "br")
+        else object : DriveIO {}
+    )
+
+    protected val dore = Dore(
+        if (mode == RobotMode.Real) DoreIOHardware()
+        else object : DoreIO {}
+    )
 
     init {
         addComponents(
