@@ -52,7 +52,7 @@ abstract class RobotOpMode : LoggedNextFTCOpMode() {
         }
 
         Logger.receivers += RLOGServer()
-        Logger.receivers += RLOGWriter("logwritertest.rlog")
+        Logger.receivers += RLOGWriter()
 
         if (mode == RobotMode.Replay) Logger.replaySource = TODO("No replay sources implemented.")
 

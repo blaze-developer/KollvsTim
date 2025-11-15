@@ -17,7 +17,7 @@ open class FulAuto(val backAnglePwr : Double, val fwdAnglePwr: Double) : AutoMod
         InstantCommand { Logger.output("AutoState", "Driving") },
         drive.runForTime(drivePower, 0.0, fwdAnglePwr, driveTime).endAfter(driveTime + 0.1.seconds),
         InstantCommand { Logger.output("AutoState", "Placing") },
-        InstantCommand { Logger.output("ImaginaryPlacement", true) },
+        dore.place,
         InstantCommand { Logger.output("AutoState", "Going Back") },
         drive.runForTime(-drivePower, 0.0, backAnglePwr, driveTime).endAfter(driveTime + 0.1.seconds),
     ).setRequirements(drive)

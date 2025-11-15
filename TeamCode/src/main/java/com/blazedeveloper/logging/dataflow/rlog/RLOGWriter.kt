@@ -4,29 +4,57 @@ import com.blazedeveloper.logging.dataflow.LogReceiver
 import com.blazedeveloper.logging.structure.LogTable
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil
 import java.io.FileOutputStream
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-class RLOGWriter(private val fileName: String) : LogReceiver {
+class RLOGWriter(private val filenameOverride: String? = null) : LogReceiver {
     private val encoder = RLOGEncoder()
-    private val logFolder = AppUtil.ROOT_FOLDER.resolve("logs")
     private var outputStream: FileOutputStream? = null
+
+    private val logFolder = AppUtil.ROOT_FOLDER.resolve("logs")
+
+    private val fileNameFormat = SimpleDateFormat("dd-MMM-yyyy_HH-mm-ss", Locale.US)
+
+    private fun String.ensureFileExtension(ext: String) =
+        if (endsWith(".$ext")) this else "$this.$ext"
 
     override fun start() {
         if (!logFolder.exists()) logFolder.mkdirs()
 
-        val file = logFolder.resolve(fileName)
-        file.delete()
-        file.createNewFile()
-        println("[RLOGWriter] Saving log to ${file.absolutePath}")
+        val fileName = filenameOverride ?: fileNameFormat.format(Date())
+            .ensureFileExtension("rlog")
+
+        val file = logFolder.resolve(fileName).apply {
+            try {
+                if (exists()) delete()
+                createNewFile()
+            } catch(e: Exception) {
+                println("""
+                    [RLOGWriter] Error opening file! Data WILL NOT be logged!
+                    ${e.stackTraceToString()}
+                """.trimIndent())
+                return
+            }
+        }
+
+        println("[RLOGWriter] Starting log writer on ${file.absolutePath}")
 
         outputStream = file.outputStream()
     }
 
     override fun receive(table: LogTable) {
+        val stream = outputStream ?: return
+
         encoder.encodeTable(table, true)
 
-        if (outputStream == null) error("problem")
-
-        outputStream?.write(encoder.output.array())
+        try {
+            stream.write(encoder.output.array())
+        } catch(e: Exception) {
+            println("[RLOGWriter] Error writing table to log! Subsequent data will NOT be logged.")
+            e.printStackTrace()
+            outputStream = null
+        }
     }
 
     override fun stop() {
