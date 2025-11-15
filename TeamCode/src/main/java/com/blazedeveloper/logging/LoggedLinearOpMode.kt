@@ -36,6 +36,9 @@ abstract class LoggedLinearOpMode : LinearOpMode() {
         Logger.stop()
     }
 
+    /** Waits until the OpMode is active using deterministic data. */
+    override fun waitForStart() { while (!isActive) { /** Do nothing */ } }
+
     /**
      * This NEEDS TO BE USED to wrap robot code iterations, e.g. loops on [isActive] or [inInit].
      * Using this to wrap your cycles automatically runs logger lifecycle methods and
