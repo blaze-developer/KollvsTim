@@ -2,15 +2,14 @@
 
 package org.firstinspires.ftc.teamcode
 
-import com.blazedeveloper.logging.LoggedNextFTCOpMode
-import com.blazedeveloper.logging.Logger
-import com.blazedeveloper.logging.dataflow.ftcdashboard.FTCDashboard
-import com.blazedeveloper.logging.dataflow.rlog.RLOGServer
-import com.blazedeveloper.logging.dataflow.rlog.RLOGWriter
+import com.blazedeveloper.chrono.Logger
+import com.blazedeveloper.chrono.dataflow.rlog.RLOGServer
+import com.blazedeveloper.chrono.dataflow.rlog.RLOGWriter
 import dev.nextftc.core.commands.Command
 import dev.nextftc.core.components.BindingsComponent
 import dev.nextftc.ftc.components.BulkReadComponent
 import org.firstinspires.ftc.teamcode.component.SubsystemRegistry
+import org.firstinspires.ftc.teamcode.opmodes.LoggedNextFTCOpMode
 import org.firstinspires.ftc.teamcode.subsystems.dore.Dore
 import org.firstinspires.ftc.teamcode.subsystems.dore.DoreIO
 import org.firstinspires.ftc.teamcode.subsystems.dore.DoreIOHardware

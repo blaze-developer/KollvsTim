@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.dore
 
-import com.blazedeveloper.logging.Logger
+import com.blazedeveloper.chrono.Logger
 import dev.nextftc.core.units.Angle
 import dev.nextftc.core.units.deg
 import dev.nextftc.hardware.impl.ServoEx

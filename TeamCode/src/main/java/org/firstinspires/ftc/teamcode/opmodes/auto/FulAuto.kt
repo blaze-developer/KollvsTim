@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto
 
-import com.blazedeveloper.logging.Logger
+import com.blazedeveloper.chrono.Logger
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import dev.nextftc.core.commands.groups.SequentialGroup
 import dev.nextftc.core.commands.utility.InstantCommand

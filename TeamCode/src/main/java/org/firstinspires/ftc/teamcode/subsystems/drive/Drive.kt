@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.drive
 
-import com.blazedeveloper.logging.Logger
+import com.blazedeveloper.chrono.Logger
 import dev.nextftc.bindings.Range
 import dev.nextftc.ftc.Gamepads
 import org.firstinspires.ftc.teamcode.subsystems.SubsystemBase

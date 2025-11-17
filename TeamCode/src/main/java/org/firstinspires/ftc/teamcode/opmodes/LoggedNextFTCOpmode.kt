@@ -1,5 +1,6 @@
-package com.blazedeveloper.logging
+package org.firstinspires.ftc.teamcode.opmodes
 
+import com.blazedeveloper.chrono.LoggedLinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import dev.nextftc.core.commands.CommandManager
 import dev.nextftc.core.components.Component
