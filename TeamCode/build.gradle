@@ -43,12 +43,8 @@ android {
 }
 
 repositories {
-    maven {
-        url = "https://repo.dairy.foundation/releases"
-    }
-    maven {
-        url = "https://jitpack.io"
-    }
+    maven { url = "https://repo.dairy.foundation/releases" }
+    maven { url = "https://jitpack.io" }
 }
 
 dependencies {
@@ -57,5 +53,5 @@ dependencies {
     implementation 'dev.nextftc:hardware:1.0.0' // If you would like to use the hardware module
     implementation 'dev.nextftc.extensions:pedro:1.0.0'
     implementation("page.j5155.AdvantageScope:lite:v26.0.0")
-    implementation("com.blazedeveloper:Chrono:v0.0.1")
+    implementation("com.blazedeveloper:chrono:v0.1.1")
 }
