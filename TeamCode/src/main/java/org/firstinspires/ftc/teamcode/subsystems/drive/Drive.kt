@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.subsystems.drive
 
 import com.blazedeveloper.chrono.Logger
 import dev.nextftc.bindings.Range
+import dev.nextftc.core.commands.Command
+import dev.nextftc.core.commands.utility.NullCommand
 import dev.nextftc.ftc.Gamepads
 import org.firstinspires.ftc.teamcode.subsystems.SubsystemBase
 import kotlin.math.absoluteValue
@@ -67,15 +69,6 @@ class Drive(private val io: DriveIO) : SubsystemBase() {
 
     fun runForTime(x: Double, y: Double, t: Double, dur: Duration) =
         runFieldPowersCmd(x, y, t).endAfter(dur).then(stop).requires(this)
-
-    override val defaultCommand = with(Gamepads.gamepad1) {
-        joystickDrive(
-            leftStickY,
-            leftStickX,
-            -rightStickX,
-            smoothingPower = 2
-        )
-    }
 
     private operator fun Range.invoke() = get()
 }

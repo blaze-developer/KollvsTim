@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import dev.nextftc.core.commands.Command
 import dev.nextftc.core.commands.utility.InstantCommand
 import dev.nextftc.core.commands.utility.LambdaCommand
+import dev.nextftc.core.commands.utility.NullCommand
 import dev.nextftc.core.subsystems.Subsystem
 import org.firstinspires.ftc.teamcode.component.SubsystemRegistry
 
@@ -17,4 +19,6 @@ abstract class SubsystemBase : Subsystem {
     protected fun run(lambda: () -> Unit) = LambdaCommand()
         .setUpdate(lambda)
         .requires(this)
+
+    override var defaultCommand: Command = NullCommand()
 }

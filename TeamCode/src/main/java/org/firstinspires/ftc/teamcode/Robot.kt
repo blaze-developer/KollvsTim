@@ -10,26 +10,18 @@ import dev.nextftc.core.components.BindingsComponent
 import dev.nextftc.ftc.components.BulkReadComponent
 import org.firstinspires.ftc.teamcode.component.SubsystemRegistry
 import org.firstinspires.ftc.teamcode.opmodes.LoggedNextFTCOpMode
-import org.firstinspires.ftc.teamcode.subsystems.dore.Dore
-import org.firstinspires.ftc.teamcode.subsystems.dore.DoreIO
-import org.firstinspires.ftc.teamcode.subsystems.dore.DoreIOHardware
 import org.firstinspires.ftc.teamcode.subsystems.drive.Drive
 import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIO
 import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIOHardware
 
 abstract class RobotOpMode : LoggedNextFTCOpMode() {
-    private enum class RobotMode { Real, Replay, Phone }
+    private enum class RobotMode { Real, Replay }
 
-    private val mode = RobotMode.Phone
+    private val mode = RobotMode.Real
 
     protected val drive = Drive(
         if (mode == RobotMode.Real) DriveIOHardware("fl", "fr", "bl", "br")
         else object : DriveIO {}
-    )
-
-    protected val dore = Dore(
-        if (mode == RobotMode.Real) DoreIOHardware()
-        else object : DoreIO {}
     )
 
     init {
@@ -52,11 +44,6 @@ abstract class RobotOpMode : LoggedNextFTCOpMode() {
 
         Logger.receivers += RLOGServer()
         Logger.receivers += RLOGWriter()
-
-        if (mode == RobotMode.Replay) Logger.replaySource = TODO("No replay sources implemented.")
-
-        Logger.output("ArrayTest", doubleArrayOf(0.5, 1.0, 1.5))
-
     }
 }
 
