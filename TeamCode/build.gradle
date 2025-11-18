@@ -10,11 +10,26 @@
 
 
 // Custom definitions may go here
+plugins {
+    id "com.peterabeles.gversion" version "1.10.3"
+}
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
 apply plugin: 'org.jetbrains.kotlin.android'
+
+gversion {
+    srcDir       = "src/main/java/"
+    classPackage = "org.firstinspires.ftc.teamcode"
+    dateFormat   = "MMM d yyyy HH:mm:ss z"
+    timeZone     = "PST"
+    debug        = false
+    language     = "kotlin"
+    indent       = "    "
+}
+
+project(":TeamCode").preBuild.dependsOn(createVersionFile)
 
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
@@ -28,9 +43,8 @@ android {
 }
 
 repositories {
-    maven {
-        url = "https://repo.dairy.foundation/releases"
-    }
+    maven { url = "https://repo.dairy.foundation/releases" }
+    maven { url = "https://jitpack.io" }
 }
 
 dependencies {
@@ -38,7 +52,6 @@ dependencies {
     implementation 'dev.nextftc:ftc:1.0.0'
     implementation 'dev.nextftc:hardware:1.0.0' // If you would like to use the hardware module
     implementation 'dev.nextftc.extensions:pedro:1.0.0'
-//    implementation 'org.psilynx.psikit:core:0.1.0'
-//    implementation 'org.psilynx.psikit:ftc:0.1.0'
     implementation("page.j5155.AdvantageScope:lite:v26.0.0")
+    implementation("com.blazedeveloper:Chrono:v0.1.2")
 }

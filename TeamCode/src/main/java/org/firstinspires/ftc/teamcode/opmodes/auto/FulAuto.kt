@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto
 
+import com.blazedeveloper.chrono.Logger
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import dev.nextftc.core.commands.groups.SequentialGroup
 import dev.nextftc.core.commands.utility.InstantCommand
 import org.firstinspires.ftc.teamcode.AutoMode
-import org.firstinspires.ftc.teamcode.component.Logger
 import kotlin.time.Duration.Companion.seconds
 
 open class FulAuto(val backAnglePwr : Double, val fwdAnglePwr: Double) : AutoMode() {
@@ -12,15 +12,15 @@ open class FulAuto(val backAnglePwr : Double, val fwdAnglePwr: Double) : AutoMod
     private val drivePower = 0.5
 
     override val auto = SequentialGroup(
-        InstantCommand { Logger.log("AutoState", "Start") },
+        InstantCommand { Logger.output("AutoState", "Start") },
         drive.zeroIMU,
-        InstantCommand { Logger.log("AutoState", "Driving") },
+        InstantCommand { Logger.output("AutoState", "Driving") },
         drive.runForTime(drivePower, 0.0, fwdAnglePwr, driveTime).endAfter(driveTime + 0.1.seconds),
-        InstantCommand { Logger.log("AutoState", "Placing") },
+        InstantCommand { Logger.output("AutoState", "Placing") },
         dore.place,
-        InstantCommand { Logger.log("AutoState", "Going Back") },
+        InstantCommand { Logger.output("AutoState", "Going Back") },
         drive.runForTime(-drivePower, 0.0, backAnglePwr, driveTime).endAfter(driveTime + 0.1.seconds),
-    ).setRequirements(drive, dore)
+    ).setRequirements(drive)
 }
 
 @Autonomous(name = "Place Left")
