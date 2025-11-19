@@ -15,9 +15,9 @@ import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIO
 import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIOHardware
 
 abstract class RobotOpMode : LoggedNextFTCOpMode() {
-    private enum class RobotMode { Real, Replay }
+    private enum class RobotMode { Real, Replay, Sim }
 
-    private val mode = RobotMode.Real
+    private val mode = RobotMode.Sim
 
     protected val drive = Drive(
         if (mode == RobotMode.Real) DriveIOHardware("fl", "fr", "bl", "br")

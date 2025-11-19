@@ -63,7 +63,7 @@ class Drive(private val io: DriveIO) : SubsystemBase() {
 
         runFieldPowers(adjustedX, adjustedY, theta())
     }
-    val zeroIMU = runOnce { io.zeroIMU() }
+    val zeroIMU = runOnce { io.zeroIMU(); println("IMU Zeroed! :3") }
 
     val stop = runFieldPowersCmd(0.0, 0.0, 0.0)
 

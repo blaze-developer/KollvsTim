@@ -10,7 +10,7 @@ class Teleop : RobotOpMode() {
         drive.defaultCommand = drive.joystickDrive(
             leftStickY,
             leftStickX,
-            rightStickX,
+            -rightStickX,
             smoothingPower = 2
         )
 
