@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.RobotOpMode
 @TeleOp(name = "TeleopKt")
 class Teleop : RobotOpMode() {
     override fun onStartButtonPressed(): Unit = with(Gamepads.gamepad1) {
-        drive.defaultCommand = drive.joystickDrive(
+        drive idleWith drive.joystickDrive(
             leftStickY,
             leftStickX,
             -rightStickX,

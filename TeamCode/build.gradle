@@ -45,13 +45,14 @@ android {
 repositories {
     mavenLocal()
     maven { url = "https://repo.dairy.foundation/releases" }
+    maven { url = "https://central.sonatype.com/repository/maven-snapshots/" }
     maven { url = "https://jitpack.io" }
 }
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation 'dev.nextftc:ftc:1.0.0'
-    implementation 'dev.nextftc:hardware:1.0.0' // If you would like to use the hardware module
+    implementation 'dev.nextftc:ftc:1.1.0-SNAPSHOT'
+    implementation 'dev.nextftc:hardware:1.1.0-SNAPSHOT' // If you would like to use the hardware module
     implementation 'dev.nextftc.extensions:pedro:1.0.0'
     implementation 'page.j5155.AdvantageScope:lite:v26.0.0'
     implementation 'com.blazedeveloper:chrono:dev'

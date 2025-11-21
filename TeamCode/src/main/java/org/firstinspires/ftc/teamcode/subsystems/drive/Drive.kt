@@ -4,17 +4,15 @@ import com.blazedeveloper.chrono.Logger
 import dev.nextftc.bindings.Range
 import dev.nextftc.core.commands.Command
 import dev.nextftc.core.commands.utility.NullCommand
-import dev.nextftc.ftc.Gamepads
-import org.firstinspires.ftc.teamcode.subsystems.SubsystemBase
+import dev.nextftc.core.subsystems.Subsystem
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.sign
 import kotlin.math.sin
-import kotlin.time.Duration
 
-class Drive(private val io: DriveIO) : SubsystemBase() {
+class Drive(private val io: DriveIO) : Subsystem {
     private val inputs = DriveInputs()
 
     override fun periodic() {
@@ -24,7 +22,7 @@ class Drive(private val io: DriveIO) : SubsystemBase() {
         Logger.output("Timestamp", Logger.timestamp.inWholeMicroseconds)
     }
 
-    fun runFieldPowersCmd(fieldX: Double, fieldY: Double, fieldTheta: Double) = runOnce {
+    fun runFieldPowersCmd(fieldX: Double, fieldY: Double, fieldTheta: Double) = instant {
         runFieldPowers(fieldX, fieldY, fieldTheta)
     }.setIsDone { false }
 
@@ -63,12 +61,12 @@ class Drive(private val io: DriveIO) : SubsystemBase() {
 
         runFieldPowers(adjustedX, adjustedY, theta())
     }
-    val zeroIMU = runOnce { io.zeroIMU(); println("IMU Zeroed! :3") }
 
-    val stop = runFieldPowersCmd(0.0, 0.0, 0.0)
-
-    fun runForTime(x: Double, y: Double, t: Double, dur: Duration) =
-        runFieldPowersCmd(x, y, t).endAfter(dur).then(stop).requires(this)
+    val zeroIMU = instant { io.zeroIMU(); println("IMU Zeroed! :3") }
 
     private operator fun Range.invoke() = get()
+
+    override var defaultCommand: Command = NullCommand()
+
+    infix fun idleWith(cmd: Command) { defaultCommand = cmd }
 }
