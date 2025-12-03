@@ -12,14 +12,17 @@ import kotlin.math.pow
 import kotlin.math.sign
 import kotlin.math.sin
 
-class Drive(private val io: DriveIO) : Subsystem {
+class Drive(private val io: DriveIO) : SubsystemBase() {
     private val inputs = DriveInputs()
 
     override fun periodic() {
         io.updateInputs(inputs)
         Logger.processInputs("Drive", inputs)
 
-        Logger.output("Timestamp", Logger.timestamp.inWholeMicroseconds)
+        Logger.output("TimestampUS", Logger.timestamp.inWholeMicroseconds)
+        Logger.output("TestLong", 1L)
+        Logger.output("TestInteger", 1)
+        Logger.output("TestDouble", 1.0)
     }
 
     fun runFieldPowersCmd(fieldX: Double, fieldY: Double, fieldTheta: Double) = instant {
