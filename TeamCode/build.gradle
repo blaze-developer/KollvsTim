@@ -55,9 +55,5 @@ dependencies {
     implementation 'dev.nextftc:hardware:1.1.0-SNAPSHOT' // If you would like to use the hardware module
     implementation 'dev.nextftc.extensions:pedro:1.0.0'
     implementation 'page.j5155.AdvantageScope:lite:v26.0.0'
-    implementation 'com.blazedeveloper:chrono:v0.4.0'
-}
-
-configurations.all {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    implementation 'com.blazedeveloper:chrono:v0.4.1'
 }

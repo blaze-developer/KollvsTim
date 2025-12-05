@@ -10,6 +10,10 @@ import dev.nextftc.core.components.BindingsComponent
 import dev.nextftc.ftc.components.BulkReadComponent
 import org.firstinspires.ftc.teamcode.component.SubsystemRegistry
 import org.firstinspires.ftc.teamcode.opmodes.LoggedNextFTCOpMode
+import org.firstinspires.ftc.teamcode.subsystems.arm.Arm
+import org.firstinspires.ftc.teamcode.subsystems.arm.ArmIO
+import org.firstinspires.ftc.teamcode.subsystems.arm.Manipulator
+import org.firstinspires.ftc.teamcode.subsystems.arm.ManipulatorIOHardware
 import org.firstinspires.ftc.teamcode.subsystems.drive.Drive
 import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIO
 import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIOHardware
@@ -17,11 +21,16 @@ import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIOHardware
 abstract class RobotOpMode : LoggedNextFTCOpMode() {
     private enum class RobotMode { Real, Replay, Sim }
 
-    private val mode = RobotMode.Sim
+    private val mode = RobotMode.Real
 
     protected val drive = Drive(
         if (mode == RobotMode.Real) DriveIOHardware("fl", "fr", "bl", "br")
         else object : DriveIO {}
+    )
+
+    protected val manipulator = Manipulator(
+        if (mode == RobotMode.Real) ManipulatorIOHardware()
+        else object : ArmIO {}
     )
 
     init {

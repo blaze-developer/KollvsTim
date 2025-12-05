@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import dev.nextftc.ftc.Gamepads
 import org.firstinspires.ftc.teamcode.RobotOpMode
+import org.firstinspires.ftc.teamcode.subsystems.arm.ArmPosition
 
 @TeleOp(name = "TeleopKt")
 class Teleop : RobotOpMode() {
@@ -15,5 +16,8 @@ class Teleop : RobotOpMode() {
         )
 
         y and b whenBecomesTrue drive.zeroIMU
+
+        rightTrigger.asButton { it > 0.8 } whenBecomesTrue manipulator.target(ArmPosition.Deployed)
+        leftTrigger.asButton { it > 0.8 } whenBecomesTrue manipulator.stow
     }
 }
