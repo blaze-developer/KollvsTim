@@ -4,7 +4,7 @@ import dev.nextftc.hardware.impl.MotorEx
 import dev.nextftc.hardware.impl.ServoEx
 
 class ManipulatorIOHardware : ManipulatorIO {
-    private val arm = MotorEx("arm").brakeMode()
+    private val arm = MotorEx("arm").zeroed().brakeMode()
     private val wrist = ServoEx("wrist")
 
     override fun updateInputs(inputs: ManipulatorInputs) {

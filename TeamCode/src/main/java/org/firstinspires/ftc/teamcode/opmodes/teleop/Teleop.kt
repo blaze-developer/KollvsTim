@@ -17,6 +17,8 @@ class Teleop : RobotOpMode() {
 
         y and b whenBecomesTrue drive.zeroIMU
 
+        manipulator.enable.schedule()
+
         rightTrigger.asButton { it > 0.8 } whenBecomesTrue manipulator.target(ArmPosition.Deployed)
         leftTrigger.asButton { it > 0.8 } whenBecomesTrue manipulator.stow
 
