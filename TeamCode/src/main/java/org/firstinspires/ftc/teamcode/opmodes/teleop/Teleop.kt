@@ -19,5 +19,8 @@ class Teleop : RobotOpMode() {
 
         rightTrigger.asButton { it > 0.8 } whenBecomesTrue manipulator.target(ArmPosition.Deployed)
         leftTrigger.asButton { it > 0.8 } whenBecomesTrue manipulator.stow
+
+        leftBumper whenBecomesTrue yoinker.open
+        rightBumper whenBecomesTrue yoinker.close
     }
 }
