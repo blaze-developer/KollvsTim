@@ -12,7 +12,7 @@ enum class ArmPosition(val arm: Double, val wrist: Double) {
     Placing(500.0, -0.5)
 }
 
-class Manipulator(private val io: ArmIO) : SubsystemBase() {
+class Manipulator(private val io: ManipulatorIO) : SubsystemBase() {
     private val inputs = ManipulatorInputs()
 
     private val pid = PIDFController(

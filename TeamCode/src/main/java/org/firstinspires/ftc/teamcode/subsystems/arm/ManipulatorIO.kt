@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.arm
 import com.blazedeveloper.chrono.structure.LogTable
 import com.blazedeveloper.chrono.structure.LoggableInputs
 
-interface ArmIO {
+interface ManipulatorIO {
     fun setArmPower(power: Double) {}
     fun setWristPosition(position: Double) {}
     fun stopArm() {}

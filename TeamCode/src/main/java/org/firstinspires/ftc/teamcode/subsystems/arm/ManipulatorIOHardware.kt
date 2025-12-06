@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.arm
 import dev.nextftc.hardware.impl.MotorEx
 import dev.nextftc.hardware.impl.ServoEx
 
-class ManipulatorIOHardware : ArmIO {
+class ManipulatorIOHardware : ManipulatorIO {
     private val arm = MotorEx("arm").brakeMode()
     private val wrist = ServoEx("wrist")
 

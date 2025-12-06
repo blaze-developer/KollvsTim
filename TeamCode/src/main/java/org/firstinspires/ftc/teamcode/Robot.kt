@@ -10,9 +10,11 @@ import dev.nextftc.core.components.BindingsComponent
 import dev.nextftc.ftc.components.BulkReadComponent
 import org.firstinspires.ftc.teamcode.component.SubsystemRegistry
 import org.firstinspires.ftc.teamcode.opmodes.LoggedNextFTCOpMode
-import org.firstinspires.ftc.teamcode.subsystems.arm.Arm
-import org.firstinspires.ftc.teamcode.subsystems.arm.ArmIO
+import org.firstinspires.ftc.teamcode.subsystems.Yoinker
+import org.firstinspires.ftc.teamcode.subsystems.YoinkerIO
+import org.firstinspires.ftc.teamcode.subsystems.YoinkerIOHardware
 import org.firstinspires.ftc.teamcode.subsystems.arm.Manipulator
+import org.firstinspires.ftc.teamcode.subsystems.arm.ManipulatorIO
 import org.firstinspires.ftc.teamcode.subsystems.arm.ManipulatorIOHardware
 import org.firstinspires.ftc.teamcode.subsystems.drive.Drive
 import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIO
@@ -30,7 +32,12 @@ abstract class RobotOpMode : LoggedNextFTCOpMode() {
 
     protected val manipulator = Manipulator(
         if (mode == RobotMode.Real) ManipulatorIOHardware()
-        else object : ArmIO {}
+        else object : ManipulatorIO {}
+    )
+
+    protected val yoinker = Yoinker(
+        if (mode == RobotMode.Real) YoinkerIOHardware()
+        else object : YoinkerIO {}
     )
 
     init {
