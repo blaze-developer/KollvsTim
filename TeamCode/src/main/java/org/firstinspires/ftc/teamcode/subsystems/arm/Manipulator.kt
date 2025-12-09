@@ -6,11 +6,10 @@ import com.pedropathing.control.PIDFController
 import org.firstinspires.ftc.teamcode.subsystems.drive.SubsystemBase
 
 /** The positions at which the arm can target consisting of the arm and wrist position. */
-enum class ArmPosition(val arm: Double?, val wrist: Double?) {
-    Stowed(0.0, 0.0),
-    Deployed(1000.0, 0.5),
-    Placing(500.0, -0.5),
-    Brake(null, null)
+enum class ArmPosition(val arm: Double, val wrist: Double) {
+    Stowed(-3280.0, 0.0),
+    Collecting(-225.0, 0.8),
+    Placing(-840.0, 0.8)
 }
 
 class Manipulator(private val io: ManipulatorIO) : SubsystemBase() {
@@ -58,10 +57,8 @@ class Manipulator(private val io: ManipulatorIO) : SubsystemBase() {
             return;
         }
 
-        setpoint.wrist?.let {
-            Logger.output("Arm/WristSetpoint", it)
-            io.setWristPosition(it)
-        }
+        Logger.output("Arm/WristSetpoint", setpoint.wrist)
+        io.setWristPosition(setpoint.wrist)
 
         pid.updatePosition(inputs.armPosition)
         io.setArmPower(pid.run())
