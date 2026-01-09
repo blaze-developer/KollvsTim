@@ -4,7 +4,6 @@ import com.blazedeveloper.chrono.Logger
 import dev.nextftc.bindings.Range
 import dev.nextftc.core.commands.Command
 import dev.nextftc.core.commands.utility.NullCommand
-import dev.nextftc.core.subsystems.Subsystem
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.max
@@ -49,18 +48,25 @@ class Drive(private val io: DriveIO) : SubsystemBase() {
         )
     }
 
-    fun runRobotPowersCmd(robotX: Double, robotY: Double, robotTheta: Double) = run {
+    fun runRobotPowersCmd(robotX: Double, robotY: Double, robotTheta: Double) = instant {
         runRobotPowers(robotX, robotY, robotTheta)
-    }.setIsDone { false }
+    }
 
     fun joystickDrive(
         fieldX: Range,
         fieldY: Range,
         theta: Range,
-        smoothingPower: Int
+        smoothingPower: Int,
+        driveSlow: () -> Boolean = { false },
+        slowFactor: Double = 0.25
     ) = run {
-        val adjustedX = fieldX().pow(smoothingPower).absoluteValue * fieldX().sign
-        val adjustedY = fieldY().pow(smoothingPower).absoluteValue * fieldY().sign
+        var adjustedX = fieldX().pow(smoothingPower).absoluteValue * fieldX().sign
+        var adjustedY = fieldY().pow(smoothingPower).absoluteValue * fieldY().sign
+
+        if (driveSlow()) {
+            adjustedX *= slowFactor
+            adjustedY *= slowFactor
+        }
 
         runFieldPowers(adjustedX, adjustedY, theta())
     }

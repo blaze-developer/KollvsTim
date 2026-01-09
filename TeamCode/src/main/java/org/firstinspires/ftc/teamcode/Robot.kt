@@ -10,34 +10,27 @@ import dev.nextftc.core.components.BindingsComponent
 import dev.nextftc.ftc.components.BulkReadComponent
 import org.firstinspires.ftc.teamcode.component.SubsystemRegistry
 import org.firstinspires.ftc.teamcode.opmodes.LoggedNextFTCOpMode
-import org.firstinspires.ftc.teamcode.subsystems.Yoinker
-import org.firstinspires.ftc.teamcode.subsystems.YoinkerIO
-import org.firstinspires.ftc.teamcode.subsystems.YoinkerIOHardware
-import org.firstinspires.ftc.teamcode.subsystems.arm.Manipulator
-import org.firstinspires.ftc.teamcode.subsystems.arm.ManipulatorIO
-import org.firstinspires.ftc.teamcode.subsystems.arm.ManipulatorIOHardware
 import org.firstinspires.ftc.teamcode.subsystems.drive.Drive
 import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIO
 import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIOHardware
+import org.firstinspires.ftc.teamcode.subsystems.vision.Vision
+import org.firstinspires.ftc.teamcode.subsystems.vision.VisionIO
+import org.firstinspires.ftc.teamcode.subsystems.vision.VisionIORev
 
 abstract class RobotOpMode : LoggedNextFTCOpMode() {
     private enum class RobotMode { Real, Replay, Sim }
 
-    private val mode = RobotMode.Real
+    private val mode = RobotMode.Sim
 
     protected val drive = Drive(
         if (mode == RobotMode.Real) DriveIOHardware("fl", "fr", "bl", "br")
         else object : DriveIO {}
     )
 
-    protected val manipulator = Manipulator(
-        if (mode == RobotMode.Real) ManipulatorIOHardware()
-        else object : ManipulatorIO {}
-    )
-
-    protected val yoinker = Yoinker(
-        if (mode == RobotMode.Real) YoinkerIOHardware()
-        else object : YoinkerIO {}
+    protected val vision = Vision(
+        if (mode == RobotMode.Real)
+            VisionIORev(colorSensorName = "color", distanceSensorName = "distance")
+        else object : VisionIO {}
     )
 
     init {

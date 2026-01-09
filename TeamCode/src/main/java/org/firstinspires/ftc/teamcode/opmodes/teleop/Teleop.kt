@@ -1,46 +1,39 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import dev.nextftc.core.commands.groups.ParallelGroup
+import dev.nextftc.core.commands.Command
+import dev.nextftc.core.commands.delays.Delay
 import dev.nextftc.core.commands.groups.SequentialGroup
+import dev.nextftc.core.commands.instant
 import dev.nextftc.ftc.Gamepads
 import org.firstinspires.ftc.teamcode.RobotOpMode
-import org.firstinspires.ftc.teamcode.subsystems.arm.ArmPosition
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 @TeleOp(name = "TeleopKt")
 class Teleop : RobotOpMode() {
+    private fun driveFor(time: Duration, x: Double, y: Double) = SequentialGroup(
+        drive.runRobotPowersCmd(x, y, 0.0),
+        Delay(time),
+        drive.runRobotPowersCmd(0.0, 0.0, 0.0),
+    )
+
+    private val bindTriggers = with (Gamepads.gamepad1) {
+        instant {
+            drive idleWith drive.joystickDrive(
+                leftStickY,
+                leftStickX,
+                -rightStickX,
+                smoothingPower = 2,
+                driveSlow = leftBumper::get
+            )
+
+            y and b whenBecomesTrue drive.zeroIMU
+        }
+    }
+
     override fun onStartButtonPressed(): Unit = with(Gamepads.gamepad1) {
-        drive idleWith drive.joystickDrive(
-            leftStickY,
-            leftStickX,
-            -rightStickX,
-            smoothingPower = 2
-        )
-
-        y and b whenBecomesTrue drive.zeroIMU
-
-        manipulator.enable.schedule()
-
-        // Replace with triggers later
-        val collectButton = leftTrigger greaterThan 0.5
-        val placeButton = rightTrigger greaterThan 0.5
-
-        collectButton whenBecomesTrue SequentialGroup(
-            manipulator.target(ArmPosition.Collecting),
-            yoinker.open,
-        )
-
-        collectButton whenBecomesFalse SequentialGroup(
-            yoinker.close,
-            manipulator.stow
-        )
-
-        placeButton whenBecomesTrue manipulator.target(ArmPosition.Placing)
-
-        placeButton whenBecomesFalse SequentialGroup(
-            yoinker.open,
-            manipulator.stow,
-            yoinker.close
-        )
+        // Start Button Commands
+        bindTriggers.schedule()
     }
 }
