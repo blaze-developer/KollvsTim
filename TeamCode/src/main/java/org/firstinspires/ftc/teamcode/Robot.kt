@@ -10,6 +10,9 @@ import dev.nextftc.core.components.BindingsComponent
 import dev.nextftc.ftc.components.BulkReadComponent
 import org.firstinspires.ftc.teamcode.component.SubsystemRegistry
 import org.firstinspires.ftc.teamcode.opmodes.LoggedNextFTCOpMode
+import org.firstinspires.ftc.teamcode.subsystems.crescent.Crescent
+import org.firstinspires.ftc.teamcode.subsystems.crescent.CrescentIO
+import org.firstinspires.ftc.teamcode.subsystems.crescent.CrescentIORev
 import org.firstinspires.ftc.teamcode.subsystems.drive.Drive
 import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIO
 import org.firstinspires.ftc.teamcode.subsystems.drive.DriveIOHardware
@@ -20,7 +23,7 @@ import org.firstinspires.ftc.teamcode.subsystems.vision.VisionIORev
 abstract class RobotOpMode : LoggedNextFTCOpMode() {
     private enum class RobotMode { Real, Replay, Sim }
 
-    private val mode = RobotMode.Sim
+    private val mode = RobotMode.Real
 
     protected val drive = Drive(
         if (mode == RobotMode.Real) DriveIOHardware("fl", "fr", "bl", "br")
@@ -29,8 +32,13 @@ abstract class RobotOpMode : LoggedNextFTCOpMode() {
 
     protected val vision = Vision(
         if (mode == RobotMode.Real)
-            VisionIORev(colorSensorName = "color", distanceSensorName = "distance")
+            VisionIORev(colorSensorName = "color")
         else object : VisionIO {}
+    )
+
+    protected val crescent = Crescent(
+        if (mode == RobotMode.Real) CrescentIORev()
+        else object : CrescentIO {}
     )
 
     init {

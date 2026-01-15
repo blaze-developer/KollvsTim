@@ -8,7 +8,7 @@ import dev.nextftc.hardware.impl.MotorEx
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 
 class CrescentIORev : CrescentIO {
-    private val motor = MotorEx("spinny").brakeMode()
+    private val motor = MotorEx("intake").brakeMode()
     private lateinit var beam: Rev2mDistanceSensor
 
     private val ballThreshold = 10.cm
@@ -23,14 +23,15 @@ class CrescentIORev : CrescentIO {
 
     override fun updateInputs(inputs: CrescentInputs) {
         if (!initialized) return
-        inputs.initialized = initialized
+        inputs.initialized = true
         inputs.position = motor.currentPosition
         inputs.velocity = motor.velocity
-        inputs.hasBall = beam.getDistance(DistanceUnit.METER).m < ballThreshold
+        inputs.distance = beam.getDistance(DistanceUnit.CM)
+        println(beam.connectionInfo)
     }
 
     override fun init() {
-        beam = ActiveOpMode.hardwareMap.get(Rev2mDistanceSensor::class.java, "beam")
+        beam = ActiveOpMode.hardwareMap.get(Rev2mDistanceSensor::class.java, "dist")
         initialized = true
     }
 }

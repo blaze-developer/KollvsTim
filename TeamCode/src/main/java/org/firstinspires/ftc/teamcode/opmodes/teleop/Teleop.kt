@@ -29,6 +29,10 @@ class Teleop : RobotOpMode() {
             )
 
             y and b whenBecomesTrue drive.zeroIMU
+
+            leftTrigger greaterThan 0.5 whenBecomesTrue crescent.intake
+            rightTrigger greaterThan 0.5 whenBecomesTrue crescent.placeUp
+            rightBumper whenBecomesTrue crescent.placeDown
         }
     }
 
