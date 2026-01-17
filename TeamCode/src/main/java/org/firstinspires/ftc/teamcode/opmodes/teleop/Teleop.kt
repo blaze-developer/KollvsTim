@@ -1,14 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import dev.nextftc.core.commands.Command
 import dev.nextftc.core.commands.delays.Delay
 import dev.nextftc.core.commands.groups.SequentialGroup
 import dev.nextftc.core.commands.instant
 import dev.nextftc.ftc.Gamepads
 import org.firstinspires.ftc.teamcode.RobotOpMode
+import org.firstinspires.ftc.teamcode.command.placeRight
+import org.firstinspires.ftc.teamcode.command.placeUp
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 @TeleOp(name = "TeleopKt")
 class Teleop : RobotOpMode() {
@@ -31,8 +31,10 @@ class Teleop : RobotOpMode() {
             y and b whenBecomesTrue drive.zeroIMU
 
             leftTrigger greaterThan 0.5 whenBecomesTrue crescent.intake
-            rightTrigger greaterThan 0.5 whenBecomesTrue crescent.placeUp
-            rightBumper whenBecomesTrue crescent.placeDown
+            leftBumper whenBecomesTrue crescent.placeDown
+
+            rightTrigger greaterThan 0.5 whenBecomesTrue placeUp(drive, vision, crescent)
+            rightBumper whenBecomesTrue placeRight(drive, vision, crescent)
         }
     }
 

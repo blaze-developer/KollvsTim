@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.subsystems.drive
 
 import com.blazedeveloper.chrono.Logger
+import com.pedropathing.control.PIDFCoefficients
+import com.pedropathing.control.PIDFController
 import dev.nextftc.bindings.Range
 import dev.nextftc.core.commands.Command
+import dev.nextftc.core.commands.utility.LambdaCommand
 import dev.nextftc.core.commands.utility.NullCommand
+import dev.nextftc.core.units.rad
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.max
@@ -18,6 +22,8 @@ class Drive(private val io: DriveIO) : SubsystemBase() {
         io.updateInputs(inputs)
         Logger.processInputs("Drive", inputs)
 
+        anglePid.updatePosition(inputs.yawRads)
+
         Logger.output("TimestampUS", Logger.timestamp.inWholeMicroseconds)
         Logger.output("TestLong", 1L)
         Logger.output("TestInteger", 1)
@@ -26,7 +32,19 @@ class Drive(private val io: DriveIO) : SubsystemBase() {
 
     fun runFieldPowersCmd(fieldX: Double, fieldY: Double, fieldTheta: Double) = instant {
         runFieldPowers(fieldX, fieldY, fieldTheta)
+    }.setStop {
+        runRobotPowers(0.0, 0.0, 0.0)
     }.setIsDone { false }
+
+    private val anglePid = PIDFController(
+        PIDFCoefficients(0.3, 0.0, 0.0, 0.0)
+    )
+
+    fun moveMagic(fieldX: Double, fieldY: Double, theta: Double? = null) =
+        run { runFieldPowers(fieldX, fieldY, anglePid.run()) }
+            .setStart { anglePid.targetPosition = theta ?: inputs.yawRads }
+            .setStop { runRobotPowers(0.0, 0.0, 0.0) }
+            .setIsDone { false }
 
     private fun runFieldPowers(fieldX: Double, fieldY: Double, fieldTheta: Double) {
         val heading = inputs.yawRads
@@ -68,7 +86,14 @@ class Drive(private val io: DriveIO) : SubsystemBase() {
             adjustedY *= slowFactor
         }
 
-        runFieldPowers(adjustedX, adjustedY, theta())
+        Logger.output("JoystickDrive/ThetaInput", theta())
+        if (theta() < 0.01) {
+            runFieldPowers(adjustedX, adjustedY, theta())
+            anglePid.targetPosition = inputs.yawRads
+            return@run
+        }
+
+        runFieldPowers(adjustedX, adjustedY, anglePid.run())
     }
 
     val zeroIMU = instant { io.zeroIMU(); println("IMU Zeroed! :3") }

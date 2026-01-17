@@ -16,7 +16,7 @@ class CrescentIORev : CrescentIO {
     private var initialized = false
 
     override fun setPower(power: Double) {
-        motor.power = power
+        motor.power = -power
     }
 
     override fun stop() = setPower(0.0)
